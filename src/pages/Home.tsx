@@ -91,7 +91,7 @@ export default function Root() {
             transition={{ duration: 0.8 }}
           >
             <motion.img 
-              src={`/${REPO_NAME}/ras_banner.jpg`} 
+              src={`${REPO_NAME}/ras_banner.jpg`} 
               alt="SWARM Demo" 
               className="w-full h-full object-contain bg-black rounded-2xl shadow-lg" 
               whileHover={{ scale: 1.05 }}
