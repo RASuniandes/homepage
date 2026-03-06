@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, User, LogOut, Settings, X } from "lucide-react";
+import { REPO_NAME } from "../../utils/config";
 
 const Header = ({
   setNavbarOpen,
@@ -45,7 +46,7 @@ const Header = ({
       {/* Logo and Tagline */}
       <div className="flex items-center gap-2">
         <Link to="/" className="flex items-center gap-2">
-          <img src="/ras_logo_black.png" alt="Logo" className="w-8 h-8" />
+          <img src={`/${REPO_NAME}/ras_logo_black.png`} alt="Logo" className="w-8 h-8" />
         </Link>
         <span className="hidden md:inline text-slate-400 text-sm font-light">
           Advancing technology for humanity
