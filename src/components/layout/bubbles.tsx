@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export default function Bubbles() {
   return <>
     <Link
-      to="https://www.linkedin.com/company/rasuniandes/posts/?feedView=all"
+      to="https://www.linkedin.com/company/rasuniandes"
       className="fixed bottom-4 right-4 w-10 h-10 overflow-hidden rounded-full border-white z-100">
       <Linkedin className="w-10 h-10 bg-blue-400 p-2 text-white" />
     </Link>
