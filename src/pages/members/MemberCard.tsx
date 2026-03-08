@@ -1,29 +1,29 @@
 import { motion } from "framer-motion";
-import { Mail, Phone, Calendar, Award, Code } from "lucide-react";
+import { Mail, Phone, Calendar, Award, Code, CheckCircle } from "lucide-react";
 import type { MemberCardProps } from "./memberType";
+import { API_URL } from "../../utils/config";
 
 const importantRoleMappers: Record<string, string> = {
-  "Presidente": "border-amber-500/40 bg-amber-500/10 text-amber-400",
-  "Vicepresidente": "border-amber-500/30 bg-amber-500/10 text-amber-400",
-  "Secretario": "border-amber-500/30 bg-amber-500/10 text-amber-400",
-  "Tesorero": "border-amber-500/30 bg-amber-500/10 text-amber-400",
-  "Electronic Lead": "border-blue-500/30 bg-blue-500/10 text-blue-400",
-  "Mechanical Lead": "border-green-500/30 bg-green-500/10 text-green-400",
-  "Software Lead": "border-purple-500/30 bg-purple-500/10 text-purple-400",
+  "Presidente": "border-rose-500/40 bg-rose-500/10 text-rose-400",
+  "Vicepresidente": "border-orange-500/30 bg-orange-500/10 text-orange-400",
+  "Secretario": "border-sky-500/30 bg-sky-500/10 text-sky-400",
+  "Tesorero": "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+  "Electronic Lead": "border-violet-500/30 bg-violet-500/10 text-violet-400",
+  "Mechanical Lead": "border-cyan-500/30 bg-cyan-500/10 text-cyan-400",
+  "Software Lead": "border-fuchsia-500/30 bg-fuchsia-500/10 text-fuchsia-400",
 };
 
-export default function MemberCard({ member }: MemberCardProps) {
+export default function MemberCard({ member, isAdmin, onApproved }: MemberCardProps) {
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
-
   return (
     <motion.div
       variants={itemVariants}
       whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 200, damping: 18 }}
-      className="relative rounded-2xl p-[1px] bg-gradient-to-br from-amber-500/40 via-transparent to-amber-600/40 group"
+      className="relative h-fit rounded-2xl p-px bg-linear-to-br from-amber-500/40 via-transparent to-amber-600/40 group"
     >
       <div className="relative bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-2xl p-7 overflow-hidden transition-all duration-300 group-hover:border-amber-500/40">
 
@@ -40,7 +40,7 @@ export default function MemberCard({ member }: MemberCardProps) {
           <div className="flex flex-wrap items-center gap-4 flex-1">
             {member.photo ? (
               <img
-                src={member.photo}
+                src={member.photo.startsWith("http") ? member.photo : `${API_URL}/${member.photo}`}
                 alt={member.name}
                 className="w-16 h-16 rounded-xl object-cover ring-2 ring-amber-500/30 group-hover:ring-amber-400 transition"
               />
@@ -64,16 +64,37 @@ export default function MemberCard({ member }: MemberCardProps) {
               )}
             </div>
           </div>
-
-          
         </div>
-              {member.role && importantRoleMappers[member.role] && (
-            <div className={`bg-amber-500/10 mb-4 border border-amber-500/40 flex justify-center px-3 py-1 rounded-full backdrop-blur-md ${importantRoleMappers[member.role] || ''}`}>
-              <span className="text-xs text-center font-semibold tracking-wider text-amber-400">
+        
+        {member.role && importantRoleMappers[member.role] ? (
+          <div className={`bg-amber-500/10 mb-4 border border-amber-500/40 flex justify-center px-3 py-1 rounded-full backdrop-blur-md ${importantRoleMappers[member.role] || ''}`}>
+            <span className="text-xs text-center font-semibold tracking-wider">
+              {member.role.toUpperCase()}
+            </span>
+          </div>
+        ) :
+          member.role && (
+            <div className={`bg-zinc-800/50 mb-4 border border-zinc-700 flex justify-center px-3 py-1 rounded-full backdrop-blur-md`}>
+              <span className="text-xs text-center font-semibold tracking-wider text-zinc-400">
                 {member.role.toUpperCase()}
               </span>
             </div>
-          )}
+          )
+        }
+
+        {/* Admin Approval Field */}
+        {isAdmin && (
+          <div className="mb-6 pb-4 border-b border-zinc-800">
+            <button
+              onClick={() => onApproved?.(member.id)}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 border border-green-500/30 hover:bg-green-500/20 hover:border-green-500/50 transition text-green-400 text-sm font-semibold"
+            >
+              <CheckCircle className="w-4 h-4" />
+              Aprobar Miembro
+            </button>
+          </div>
+        )}
+
         {/* Contact Info */}
         <div className="space-y-3 mb-6 text-sm">
           <div className="flex items-center gap-2 text-zinc-300">

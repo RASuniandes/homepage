@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import axios from "axios";
 import { useState } from "react";
 import { API_URL } from "../../utils/config";
+import { toast } from "react-toastify";
 
 interface RequestJoinModalProps {
   onClose: () => void;
@@ -21,13 +22,14 @@ export default function RequestJoinModal({
     phoneNumber: "",
     role: "",
     uCode: "",
+    project: "",
+    photo: null as File | null,
     skills: [] as string[],
     contributions: [] as string[],
     goals: [] as string[],
-    project: "",
   });
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState<string>("");
   const [currentInput, setCurrentInput] = useState({ skills: "", contributions: "", goals: "" });
 
   const validateEmail = (email: string): boolean => {
@@ -38,6 +40,18 @@ export default function RequestJoinModal({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData(prev => ({ ...prev, photo: file }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleListInputChange = (field: "skills" | "contributions" | "goals", value: string) => {
@@ -71,32 +85,50 @@ export default function RequestJoinModal({
 
   const handleJoinRequest = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
     if (!formData.name.trim()) {
-      setError("Por favor ingresa tu nombre");
+      toast.error("Por favor ingresa tu nombre");
       return;
     }
     if (!formData.email.trim()) {
-      setError("Por favor ingresa tu correo electrónico");
+      toast.error("Por favor ingresa tu correo electrónico");
       return;
     }
     if (!validateEmail(formData.email)) {
-      setError("Por favor ingresa un correo electrónico válido");
+      toast.error("Por favor ingresa un correo electrónico válido");
       return;
     }
     if (!formData.major.trim()) {
-      setError("Por favor ingresa tu carrera");
+      toast.error("Por favor ingresa tu carrera");
       return;
     }
     if (formData.name.trim().length < 2) {
-      setError("El nombre debe tener al menos 2 caracteres");
+      toast.error("El nombre debe tener al menos 2 caracteres");
       return;
     }
 
     try {
       setLoading(true);
-      await axios.post(`${API_URL}/api/members/request-join`, formData);
+      const submitData = new FormData();
+      submitData.append("name", formData.name);
+      submitData.append("email", formData.email);
+      submitData.append("major", formData.major);
+      submitData.append("doubleMajor", formData.doubleMajor);
+      submitData.append("phoneNumber", formData.phoneNumber);
+      submitData.append("role", formData.role);
+      submitData.append("uCode", formData.uCode);
+      submitData.append("project", formData.project);
+      submitData.append("skills", JSON.stringify(formData.skills));
+      submitData.append("contributions", JSON.stringify(formData.contributions));
+      submitData.append("goals", JSON.stringify(formData.goals));
+      if (formData.photo) {
+        submitData.append("photo", formData.photo);
+      }
+
+      await axios.post(`${API_URL}/members/request-join`, submitData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+
       setFormData({
         name: "",
         email: "",
@@ -105,15 +137,17 @@ export default function RequestJoinModal({
         phoneNumber: "",
         role: "",
         uCode: "",
+        project: "",
+        photo: null,
         skills: [],
         contributions: [],
         goals: [],
-        project: "",
       });
+      setPhotoPreview("");
       onSuccess?.();
       onClose();
     } catch {
-      setError("Error al enviar la solicitud. Por favor intenta de nuevo.");
+      toast.error("Error al enviar la solicitud. Por favor intenta de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -141,12 +175,8 @@ export default function RequestJoinModal({
           <h2 className="text-2xl font-bold text-yellow-500 mb-6">
             Solicitar Membresía
           </h2>
-          <form onSubmit={handleJoinRequest} className="space-y-4">
-            {error && (
-              <div className="bg-red-500/10 border border-red-500 text-red-400 p-3 rounded-lg text-sm">
-                {error}
-              </div>
-            )}
+          <form onSubmit={handleJoinRequest} className="space-y-4" noValidate>
+
             <input
               type="text"
               name="name"
@@ -220,20 +250,33 @@ export default function RequestJoinModal({
               disabled={loading}
             />
 
+            {/* Photo Upload */}
+            <div>
+              <label className="text-sm text-gray-400 mb-2 block">Foto de perfil (opcional)</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="w-full bg-slate-800 border border-amber-500/30 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+                disabled={loading}
+              />
+              {photoPreview && (
+                <img src={photoPreview} alt="Preview" className="w-24 h-24 rounded-lg mt-2 object-cover" />
+              )}
+            </div>
+
             {/* Skills */}
             <div>
               <label className="text-sm text-gray-400 mb-2 block">Habilidades (presiona Enter)</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Ej: React, TypeScript"
-                  value={currentInput.skills}
-                  onChange={(e) => handleListInputChange("skills", e.target.value)}
-                  onKeyPress={(e) => handleListKeyPress("skills", e)}
-                  className="flex-1 bg-slate-800 border border-amber-500/30 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-                  disabled={loading}
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="Ej: React, TypeScript"
+                value={currentInput.skills}
+                onChange={(e) => handleListInputChange("skills", e.target.value)}
+                onKeyPress={(e) => handleListKeyPress("skills", e)}
+                className="w-full bg-slate-800 border border-amber-500/30 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+                disabled={loading}
+              />
               <div className="flex flex-wrap gap-2 mt-2">
                 {formData.skills.map((skill, idx) => (
                   <span key={idx} className="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-lg text-sm flex items-center gap-2">
@@ -247,17 +290,15 @@ export default function RequestJoinModal({
             {/* Contributions */}
             <div>
               <label className="text-sm text-gray-400 mb-2 block">Contribuciones (presiona Enter)</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Ej: Documentación, Testing"
-                  value={currentInput.contributions}
-                  onChange={(e) => handleListInputChange("contributions", e.target.value)}
-                  onKeyPress={(e) => handleListKeyPress("contributions", e)}
-                  className="flex-1 bg-slate-800 border border-amber-500/30 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-                  disabled={loading}
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="Ej: Documentación, Testing"
+                value={currentInput.contributions}
+                onChange={(e) => handleListInputChange("contributions", e.target.value)}
+                onKeyPress={(e) => handleListKeyPress("contributions", e)}
+                className="w-full bg-slate-800 border border-amber-500/30 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+                disabled={loading}
+              />
               <div className="flex flex-wrap gap-2 mt-2">
                 {formData.contributions.map((contrib, idx) => (
                   <span key={idx} className="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-lg text-sm flex items-center gap-2">
@@ -271,17 +312,15 @@ export default function RequestJoinModal({
             {/* Goals */}
             <div>
               <label className="text-sm text-gray-400 mb-2 block">Objetivos (presiona Enter)</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Ej: Mejorar habilidades, Networking"
-                  value={currentInput.goals}
-                  onChange={(e) => handleListInputChange("goals", e.target.value)}
-                  onKeyPress={(e) => handleListKeyPress("goals", e)}
-                  className="flex-1 bg-slate-800 border border-amber-500/30 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-                  disabled={loading}
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="Ej: Mejorar habilidades, Networking"
+                value={currentInput.goals}
+                onChange={(e) => handleListInputChange("goals", e.target.value)}
+                onKeyPress={(e) => handleListKeyPress("goals", e)}
+                className="w-full bg-slate-800 border border-amber-500/30 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+                disabled={loading}
+              />
               <div className="flex flex-wrap gap-2 mt-2">
                 {formData.goals.map((goal, idx) => (
                   <span key={idx} className="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-lg text-sm flex items-center gap-2">
@@ -294,8 +333,7 @@ export default function RequestJoinModal({
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full px-4 py-2 bg-yellow-500 text-black rounded-lg font-semibold hover:bg-yellow-400 transition disabled:opacity-50 disabled:cursor-not-allowed text-white"
+              className="w-full px-4 py-2 bg-yellow-500 text-white rounded-lg font-semibold hover:bg-yellow-400 transition"
             >
               {loading ? "Enviando..." : "Enviar Solicitud"}
             </button>
