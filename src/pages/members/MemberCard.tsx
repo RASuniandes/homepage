@@ -23,9 +23,9 @@ export default function MemberCard({ member, isAdmin, onApproved }: MemberCardPr
       variants={itemVariants}
       whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 200, damping: 18 }}
-      className="relative h-fit rounded-2xl p-px bg-linear-to-br from-amber-500/40 via-transparent to-amber-600/40 group"
+      className="relative h-full rounded-2xl p-px bg-linear-to-br from-amber-500/40 via-transparent to-amber-600/40 group"
     >
-      <div className="relative bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-2xl p-7 overflow-hidden transition-all duration-300 group-hover:border-amber-500/40">
+      <div className="relative h-full bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-2xl p-7 overflow-hidden transition-all duration-300 group-hover:border-amber-500/40">
 
         {/* subtle glow effect */}
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
@@ -157,11 +157,11 @@ export default function MemberCard({ member, isAdmin, onApproved }: MemberCardPr
               </span>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
               {member.skills.map((skill) => (
                 <span
                   key={skill}
-                  className="text-xs px-3 py-1 rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700 group-hover:border-amber-500/30 transition"
+                  className="text-xs h-auto px-3 py-1 rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700 group-hover:border-amber-500/30 transition"
                 >
                   {skill}
                 </span>
