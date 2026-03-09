@@ -5,7 +5,7 @@ import { API_URL } from "../../utils/config";
 
 const importantRoleMappers: Record<string, string> = {
   "Presidente": "border-rose-500/40 bg-rose-500/10 text-rose-400",
-  "Vicepresidente": "border-orange-500/30 bg-orange-500/10 text-orange-400",
+  "Vicepresidente": "border-green-500/30 bg-green-500/10 text-green-400",
   "Secretario": "border-sky-500/30 bg-sky-500/10 text-sky-400",
   "Tesorero": "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
   "Electronic Lead": "border-violet-500/30 bg-violet-500/10 text-violet-400",
