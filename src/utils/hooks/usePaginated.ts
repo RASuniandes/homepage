@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import useInfiniteObserver from './useInfiniteObserver.js'
 import type { PaginatedResponse } from '../APIResponse.js'
 
-export default function usePaginatedFetch<T extends Record<string, unknown>> ({
+export default function usePaginatedFetch<T> ({
   fetchFn,
   objectKey = '',
   search = '',
