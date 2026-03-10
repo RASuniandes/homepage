@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { BatteryCharging, Bot, GalleryHorizontal, Lock, ChevronDown, Cpu, Users, Home } from "lucide-react";
+import { BatteryCharging, Bot, GalleryHorizontal, Lock, ChevronDown, Cpu, Users, Home, Calendar } from "lucide-react";
 import { useMemo, useState } from "react";
 
 type LinkType = {
@@ -32,6 +32,13 @@ const links: LinkType[] = [
     label: "Miembros",
     icon: <Users className="w-5 h-5" />,
     href: "/members",
+    // isUpcoming: true
+  },
+  {
+    id: 5,
+    label: "Eventos",
+    icon: <Calendar className="w-5 h-5" />,
+    href: "/events",
     // isUpcoming: true
   },
   {

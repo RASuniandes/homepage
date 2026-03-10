@@ -25,18 +25,18 @@ const Layout = () => {
 
           <div
             ref={navContainerRef}
-            className="w-full overflow-hidden transition-[max-height] duration-300 ease-in-out border-b border-amber-500/30"
+            className="absolute inset-0 w-full overflow-hidden transition-[max-height] duration-300 ease-in-out border-b border-amber-500/30"
           >
             <Header setNavbarOpen={setNavbarOpen} navbarOpen={navbarOpen} />
           </div>
 
 
-        <motion.div className="relative flex-1 w-full flex overflow-hidden">
+        <motion.div className="flex-1 w-full flex overflow-hidden">
           {/* Left sidebar */}
           <Sidebar navbarOpen={navbarOpen} setNavbarOpen={setNavbarOpen} />
 
           {/* Main content area */}
-          <div className="mt-16 text-white relative flex flex-col items-center w-full overflow-hidden lg:ml-0">
+          <div className="mt-16 ml-16 text-white relative flex flex-col items-center w-full overflow-hidden">
             <div className="relative w-full h-full overflow-y-auto scrollbar-hide scroll-smooth overflow-x-hidden">
               <Outlet />
             </div>
