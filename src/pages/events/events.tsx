@@ -31,12 +31,7 @@ export default function EventsPage() {
         published: "true",
         page,
         search,
-        // location_type: locationFilter !== "all" ? locationFilter : "",
-        // cancelled: cancelled !== "all" ? cancelled === "true" : false,
-        // cost: cost !== "all" ? cost === "true" : false,
-        city: city || "",
-        // start_time_after: startTimeAfter || 0,
-        // start_time_before: startTimeBefore || 0,
+        city: city || ""
       }),
     totalAmountKey: "total_amount",
     objectKey: "events",
