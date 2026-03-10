@@ -36,7 +36,7 @@ const Layout = () => {
           <Sidebar navbarOpen={navbarOpen} setNavbarOpen={setNavbarOpen} />
 
           {/* Main content area */}
-          <div className="mt-16 ml-16 text-white relative flex flex-col items-center w-full overflow-hidden">
+          <div className="mt-16 lg:ml-16 text-white relative flex flex-col items-center w-full overflow-hidden">
             <div className="relative w-full h-full overflow-y-auto scrollbar-hide scroll-smooth overflow-x-hidden">
               <Outlet />
             </div>

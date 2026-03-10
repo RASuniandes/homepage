@@ -26,7 +26,7 @@ export default function EventCard({ event, index }: { event: IEEEEventResponse; 
   const [isSaved, setIsSaved] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const bannerColor = BANNER_COLORS[index % BANNER_COLORS.length];
-
+  const randomBanner = `https://source.unsplash.com/random/800x600?sig=${event.id}`;
   // Logical Helpers
   const isRegOpen = () => {
     const now = new Date();
@@ -68,7 +68,7 @@ export default function EventCard({ event, index }: { event: IEEEEventResponse; 
             <div className="absolute inset-0 opacity-40 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImEiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+PHBhdGggZD0iTTAgMGg2MHY2MEgweiIgZmlsbD0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNhKSIvPjwvc3ZnPg==')]" />
           </div>
           <motion.img
-            src={attrs.image || `https://images.unsplash.com/photo-1591115765373-520b7a217297?w=800&q=80`}
+            src={attrs.image || randomBanner}
             // alt={attrs.title}
             animate={{ scale: isHovered ? 1.05 : 1 }}
             className="w-full h-full object-cover transition-transform duration-700 opacity-60"
