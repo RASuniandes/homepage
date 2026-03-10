@@ -1,7 +1,7 @@
 import type { IEEEEventResponse } from "./iEEEType";
 import { 
-  MapPin, Users, ChevronRight, Calendar, Share2, 
-  Bookmark, ExternalLink, Globe, Clock, Award, 
+  MapPin, Users, 
+  Bookmark, ExternalLink, Globe, Clock, 
   Wallet, ShieldCheck, Languages, Info
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,7 +20,6 @@ const BANNER_COLORS = [
 export default function EventCard({ event, index }: { event: IEEEEventResponse; index: number }) {
   const attrs = event.attributes;
   const startDate = new Date(attrs["start-time"]);
-  const endDate = new Date(attrs["end-time"]);
   const regStart = attrs["registration-start-time"] ? new Date(attrs["registration-start-time"]) : null;
   const regEnd = attrs["registration-end-time"] ? new Date(attrs["registration-end-time"]) : null;
   

@@ -3,8 +3,7 @@ export default function InfiniteList<T>({
   renderItem,
   loading,
   sentinelRef,
-  emptyText = "No items found",
-  containerClassName = "",
+  emptyText = "No items found"
 }: {
   items: T[] | null;
   renderItem: (item: T, index: number) => React.ReactNode;

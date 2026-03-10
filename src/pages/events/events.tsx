@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Search, Filter, Loader } from "lucide-react";
 import { type IEEEEventResponse } from "./iEEEType";
@@ -9,7 +9,7 @@ import { iEEEApi } from "../../utils/APIs/IEEEApi";
 import InfiniteList from "../../components/InfiniteList";
 
 export default function EventsPage() {
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [locationFilter, setLocationFilter] = useState("all");
   const [cancelled, setCancelled] = useState("all");
@@ -31,12 +31,12 @@ export default function EventsPage() {
         published: "true",
         page,
         search,
-        location_type: locationFilter !== "all" ? locationFilter : undefined,
-        cancelled: cancelled !== "all" ? cancelled === "true" : undefined,
-        cost: cost !== "all" ? cost === "true" : undefined,
-        city: city || undefined,
-        start_time_after: startTimeAfter || undefined,
-        start_time_before: startTimeBefore || undefined,
+        location_type: locationFilter !== "all" ? locationFilter : "",
+        // cancelled: cancelled !== "all" ? cancelled === "true" : false,
+        // cost: cost !== "all" ? cost === "true" : false,
+        city: city || "",
+        start_time_after: startTimeAfter || 0,
+        start_time_before: startTimeBefore || 0,
       }),
     totalAmountKey: "total_amount",
     objectKey: "events",
