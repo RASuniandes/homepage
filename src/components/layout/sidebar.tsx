@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { BatteryCharging, Bot, GalleryHorizontal, Lock, ChevronDown, Cpu, Users, Home, Calendar } from "lucide-react";
+import { BatteryCharging, Bot, GalleryHorizontal, Lock, ChevronDown, Cpu, Users, Home, Calendar, Zap, Target } from "lucide-react";
 import { useMemo, useState } from "react";
 
 type LinkType = {
@@ -72,6 +72,25 @@ const links: LinkType[] = [
         isUpcoming: true
       }
     ]
+  }, 
+  {
+    id: 6,
+    label: "SWARM",
+    icon: <Bot className="w-5 h-5" />,
+    subItems: [
+      {
+        id: 61,
+        label: "LIDAR View",
+        href: "/lidar-view",
+        icon: <Target className="w-5 h-5" />
+      },
+      {
+        id: 62,
+        label: "Controller",
+        href: "/controller",
+        icon: <Zap className="w-5 h-5" />
+      }
+    ] 
   }
 ];
 

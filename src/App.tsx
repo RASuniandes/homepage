@@ -7,6 +7,8 @@ import LipoEstimator from "./pages/batteryEstimator/BatteryEstimator";
 import MembersPage from "./pages/members/members";
 import { ToastContainer } from "react-toastify";
 import EventsPage from "./pages/events/events";
+import ControllerView from "./pages/controller/Controller";
+import LidarView from "./pages/lidarView/LidarView";
 export default function App() {
 
   return (
@@ -19,6 +21,8 @@ export default function App() {
           <Route path="" element={<Root />} />
           <Route path="events" element={<EventsPage />} />
           <Route path="members" element={<MembersPage />} />
+          <Route path="controller" element={<ControllerView />} />
+          <Route path="lidar-view" element={<LidarView />} />
           <Route path="tools/lipo-estimator" element={<LipoEstimator />} />
           <Route path="tools/pcb-calculator" element={<PcbWidthCalculator />} />
         </Route>
