@@ -1,50 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import * as ROSLIB from 'roslib';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Radio, ShieldAlert, Zap, Target } from 'lucide-react';
 
 export default function LidarView() {
   const radarRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState('OFFLINE');
   const [scanTopic, setScanTopic] = useState<ROSLIB.Topic | null>(null);
-  const [lastDetection, setLastDetection] = useState<number>(0);
-
-  useEffect(() => {
-    const ros = new ROSLIB.Ros({ url: 'ws://192.168.0.108:9090' });
-    const topic = new ROSLIB.Topic({
-      ros,
-      name: '/scan',
-      messageType: 'sensor_msgs/LaserScan'
-    });
-
-    ros.on('connection', () => setStatus('CONNECTED'));
-    ros.on('error', () => setStatus('ERROR'));
-    ros.on('close', () => setStatus('OFFLINE'));
-
-    setScanTopic(topic);
-    return () => ros.close();
-  }, []);
-
-  useEffect(() => {
-    if (!scanTopic) return;
-
-    const unsubscribe = scanTopic.subscribe((msg: any) => {
-      const { ranges, angle_min, angle_increment } = msg;
-      
-      ranges.forEach((r: number, i: number) => {
-        // Filter out infinite or invalid readings (common in LiDAR)
-        if (r > 0 && isFinite(r) && r < 10) { 
-          const angle = (angle_min + i * angle_increment) * (180 / Math.PI);
-          const [px, py] = distanceAngleToXY(r, angle);
-          addPoint(px, py);
-          setLastDetection(Date.now());
-        }
-      });
-    });
-
-    return () => scanTopic.unsubscribe();
-  }, [scanTopic]);
-
+  const [, setLastDetection] = useState<number>(0);
   function addPoint(x: number, y: number) {
     const container = radarRef.current;
     if (!container) return;
@@ -72,6 +35,45 @@ export default function LidarView() {
     const y = 50 + scale * Math.sin(rad);
     return [x, y];
   }
+
+  useEffect(() => {
+    const ros = new ROSLIB.Ros({ url: 'ws://192.168.0.108:9090' });
+    const topic = new ROSLIB.Topic({
+      ros,
+      name: '/scan',
+      messageType: 'sensor_msgs/LaserScan'
+    });
+
+    ros.on('connection', () => setStatus('CONNECTED'));
+    ros.on('error', () => setStatus('ERROR'));
+    ros.on('close', () => setStatus('OFFLINE'));
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setScanTopic(topic);
+    return () => ros.close();
+  }, []);
+
+  useEffect(() => {
+    if (!scanTopic) return;
+
+    scanTopic.subscribe((msg: unknown) => {
+      const { ranges, angle_min, angle_increment } = msg as { ranges: number[], angle_min: number, angle_increment: number }
+      
+      ranges.forEach((r: number, i: number) => {
+        // Filter out infinite or invalid readings (common in LiDAR)
+        if (r > 0 && isFinite(r) && r < 10) {
+          const angle = (angle_min + i * angle_increment) * (180 / Math.PI);
+          const [px, py] = distanceAngleToXY(r, angle);
+          addPoint(px, py);
+          setLastDetection(Date.now());
+        }
+      });
+
+    });
+
+    return () => scanTopic.unsubscribe();
+  }, [scanTopic]);
+
 
   return (
     <div className="min-h-screen bg-black text-white p-6 overflow-hidden select-none" style={{ fontFamily: "'Rajdhani', sans-serif" }}>
@@ -148,7 +150,7 @@ export default function LidarView() {
   );
 }
 
-function TelemetryCard({ icon, title, value, color }: any) {
+function TelemetryCard({ icon, title, value, color }: { icon: React.ReactNode, title: string, value: string, color: string }) {
     return (
         <div className="bg-zinc-900/40 border-l-2 border-red-900 p-4 backdrop-blur-md">
             <div className="flex items-center gap-2 text-[10px] text-gray-500 font-mono mb-1">

@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import * as ROSLIB from "roslib";
-import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, RotateCw, Activity, gauge } from "lucide-react";
+import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, RotateCw, Activity } from "lucide-react";
 
 // ROS Configuration
 const ros = new ROSLIB.Ros({ url: 'ws://192.168.0.108:9090' });
@@ -58,11 +58,13 @@ export default function ControllerView() {
     
     setActiveIndex(idx);
 
-    const message = new ROSLIB.Message({
-      speed: speed,
-      direction: direction,
-      angle: angle
-    });
+    const message = {
+      data: JSON.stringify({
+        speed: speed,
+        direction: direction,
+        angle: angle
+      })
+    };
 
     movementTopic.publish(message);
     setTimeout(() => setActiveIndex(null), 150);
@@ -164,7 +166,7 @@ export default function ControllerView() {
 }
 
 // Sub-component for Sliders to keep code clean
-function ControlSlider({ label, value, max, onChange, color, unit }: any) {
+function ControlSlider({ label, value, max, onChange, color, unit }: { label: string, value: number, max: number, onChange: (val: number) => void, color: string, unit: string }) {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-end">
