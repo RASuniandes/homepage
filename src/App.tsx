@@ -1,7 +1,7 @@
 import ErrorPage from "./components/error/errorPage";
 import Layout from "./components/layout/Layout";
 import Root from "./pages/Home";
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, HashRouter } from "react-router-dom";
 import PcbWidthCalculator from "./pages/pcbWidthCalculator/PcbWidthCalculator";
 import LipoEstimator from "./pages/batteryEstimator/BatteryEstimator";
 import MembersPage from "./pages/members/members";
@@ -12,7 +12,7 @@ import LidarView from "./pages/lidarView/LidarView";
 export default function App() {
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route
           path="/"
@@ -40,7 +40,7 @@ export default function App() {
         pauseOnHover
         theme="dark"
       />
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
