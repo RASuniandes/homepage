@@ -1,0 +1,440 @@
+/* =====================================================
+   RAS UNIANDES — INNER-PAGE STYLES
+   Styles specific to subpages (members, tools).
+   Requires ras-tokens.css to be loaded first.
+   All selectors scoped under .ras-ds.
+   ===================================================== */
+
+/* ─── Page header (breadcrumb + eyebrow + h2) ─── */
+.ras-ds .page-header {
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--line);
+}
+.ras-ds .breadcrumb {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: .1em;
+  color: var(--ink-faint);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ras-ds .breadcrumb a { color: var(--ink-soft); transition: color .2s; }
+.ras-ds .breadcrumb a:hover { color: var(--accent); }
+.ras-ds .breadcrumb .sep { opacity: .5; }
+
+/* ─── Area filter chips ─── */
+.ras-ds .filter-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 32px 0 0;
+}
+.ras-ds .chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: border-color .2s, color .2s, background .2s;
+  line-height: 1;
+}
+.ras-ds .chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.ras-ds .chip.active {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+
+/* ─── Members grid ─── */
+.ras-ds .members-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  margin-top: 40px;
+}
+@media (max-width: 1100px) {
+  .ras-ds .members-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .ras-ds .members-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Member card ─── */
+.ras-ds .member-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s;
+  display: flex;
+  flex-direction: column;
+}
+.ras-ds .member-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--line-strong);
+}
+.ras-ds .member-card .avatar {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ras-ds .member-card .avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+.ras-ds .member-card .initials {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 800;
+  font-size: 36px;
+  color: var(--accent);
+  line-height: 1;
+}
+.ras-ds .member-card h3 {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  margin: 0 0 4px;
+  letter-spacing: -.01em;
+}
+.ras-ds .member-card .member-major {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+.ras-ds .member-card .member-role {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+.ras-ds .member-card .member-role.council {
+  color: var(--accent);
+}
+.ras-ds .member-card .member-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+.ras-ds .member-card .member-date {
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  font-family: 'IBM Plex Mono', monospace;
+  margin-top: 10px;
+}
+.ras-ds .approve-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: var(--accent-tint);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+  margin-top: 14px;
+}
+.ras-ds .approve-btn:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* ─── Modal ─── */
+.ras-ds .modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28,26,27,.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+}
+.ras-ds .modal {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 520px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+.ras-ds .modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: border-color .2s, color .2s;
+  padding: 0;
+}
+.ras-ds .modal-close:hover { border-color: var(--accent); color: var(--accent); }
+.ras-ds .modal h2 {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  margin: 0 0 24px;
+  letter-spacing: -.01em;
+}
+.ras-ds .modal-section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 24px 0 14px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+/* ─── Form fields ─── */
+.ras-ds .field { margin-bottom: 18px; }
+.ras-ds .field label {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 7px;
+}
+.ras-ds .field input[type="text"],
+.ras-ds .field input[type="email"],
+.ras-ds .field input[type="password"],
+.ras-ds .field input[type="number"],
+.ras-ds .field select {
+  width: 100%;
+  padding: 10px 13px;
+  border-radius: 9px;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 15px;
+  transition: border-color .2s, box-shadow .2s;
+  appearance: none;
+}
+.ras-ds .field input:focus,
+.ras-ds .field select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-tint);
+}
+.ras-ds .field .hint {
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin-top: 5px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+/* List-input chip row */
+.ras-ds .field-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.ras-ds .field-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 7px;
+  background: var(--accent-tint);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+.ras-ds .field-tag button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+}
+/* Photo upload preview */
+.ras-ds .photo-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  margin-bottom: 8px;
+}
+.ras-ds .photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ─── Tool layout ─── */
+.ras-ds .tool-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 48px;
+  margin-top: 40px;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .ras-ds .tool-layout { grid-template-columns: 1fr; }
+}
+
+/* ─── Form fields in tools ─── */
+.ras-ds .tool-inputs .field input[type="number"],
+.ras-ds .tool-inputs .field select {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+}
+
+/* ─── Unit switcher ─── */
+.ras-ds .unit-switch {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+.ras-ds .unit-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  padding: 7px 16px;
+  border-radius: 7px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all .2s;
+}
+.ras-ds .unit-btn.active {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+.ras-ds .unit-btn:not(.active):hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ─── Result panel ─── */
+.ras-ds .result-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 36px;
+  box-shadow: var(--shadow);
+}
+.ras-ds .result-number {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 800;
+  font-size: clamp(36px, 5vw, 58px);
+  color: var(--accent);
+  letter-spacing: -.03em;
+  line-height: 1;
+  margin: 14px 0 6px;
+}
+.ras-ds .result-number small {
+  font-size: .38em;
+  color: var(--ink-soft);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.ras-ds .result-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin-bottom: 24px;
+}
+.ras-ds .result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+  gap: 16px;
+}
+.ras-ds .result-row:last-of-type { border-bottom: none; }
+.ras-ds .result-label { color: var(--ink-soft); }
+.ras-ds .result-value {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  color: var(--ink);
+}
+.ras-ds .tool-formula {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.ras-ds .tool-formula p {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  margin: 0 0 6px;
+}
+
+/* ─── Warning banner ─── */
+.ras-ds .warning-banner {
+  margin-top: 16px;
+  padding: 13px 16px;
+  border-radius: 10px;
+  background: var(--accent-tint);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+
+/* ─── Empty state ─── */
+.ras-ds .empty-state {
+  padding: 64px 0;
+  text-align: center;
+  color: var(--ink-soft);
+}
+.ras-ds .empty-state p {
+  font-size: 15px;
+  margin: 0;
+}

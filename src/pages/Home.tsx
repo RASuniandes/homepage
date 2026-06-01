@@ -1,366 +1,408 @@
-import { Instagram, Linkedin, Youtube } from "lucide-react";
-import { motion } from "framer-motion";
-import { REPO_NAME } from "../utils/config";
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { REPO_NAME } from '../utils/config';
+import './home.css';
 
-export default function Root() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2, delayChildren: 0.3 },
-    },
+export default function Home() {
+  // Scroll-reveal via IntersectionObserver
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      }),
+      { threshold: 0.16, rootMargin: '0px 0px -8% 0px' }
+    );
+    document.querySelectorAll('#ras-home .reveal, #ras-home .stagger').forEach(el => io.observe(el));
+    // Hero is above the fold — reveal immediately
+    requestAnimationFrame(() => {
+      document.querySelectorAll('#ras-home .hero .stagger, #ras-home .hero .reveal').forEach(el => el.classList.add('in'));
+    });
+    return () => io.disconnect();
+  }, []);
+
+  const handleThemeToggle = () => {
+    const root = document.documentElement;
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('ras-theme', next);
+  };
+
+  const scrollTo = (id: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden" style={{ fontFamily: "'Rajdhani', sans-serif" }}>
-      {/* Hero Section */}
-      <div className="w-full flex items-center justify-center overflow-hidden mb-4 py-12 md:py-20">
-        <motion.div
-          className="text-center px-4"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1 }}
-        >
-          <h2 
-            className="text-5xl sm:text-7xl md:text-9xl font-black leading-tight sm:leading-none mb-4" 
-            style={{ 
-              fontFamily: "'Space Mono', monospace",
-              background: 'linear-gradient(135deg, #862633, #FAAE1F)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: '2px sm:4px',
-              textShadow: '0 20px 40px rgba(0,0,0,0.5)',
-            }}
-          >
-            RAS UNIANDES
-          </h2>
-          <motion.p 
-            className="text-lg sm:text-xl md:text-2xl text-yellow-500 tracking-widest font-semibold"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            style={{ letterSpacing: '1px sm:3px' }}
-          >
-            Advancing Technology for Humanity
-          </motion.p>
-        </motion.div>
-      </div>
-      
-      <hr className="w-screen border-t border-yellow-500/30" />
-      
-      <section className="flex items-center relative bg-black px-4 sm:px-6 md:px-0">
-        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 items-center py-12 md:py-20">
-          <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
-            <motion.h1 
-              className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4" 
-              style={{ fontFamily: "'Space Mono', monospace", background: 'linear-gradient(135deg, #862633, #FAAE1F)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
-              animate={{ scale: [1, 1.02, 1] }}
-              transition={{ repeat: Infinity, duration: 4 }}
-            >
-              PROYECTO SWARM
-            </motion.h1>
-            <motion.div 
-              className="text-lg sm:text-xl md:text-2xl font-semibold text-yellow-500 mb-4 md:mb-6" 
-              style={{ letterSpacing: '1px sm:2px' }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              SYNCHRONIZED WAREHOUSE AUTONOMOUS ROBOTICS MANAGEMENT
-            </motion.div>
-            <motion.p 
-              className="text-base sm:text-lg leading-relaxed text-gray-300 mb-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              Plataforma robótica autónoma para gestión logística inteligente. Investigación aplicada en arquitecturas mecánicas, electrónicas y de software basadas en ROS y SLAM.
-            </motion.p>
-            <motion.p 
-              className="text-sm sm:text-base text-yellow-500"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-            >
-              IEEE Robotics and Automation Society | Universidad de Los Andes
-            </motion.p>
-          </motion.div>
-          <motion.div 
-            className="flex items-center justify-center h-64 sm:h-80 md:h-96 relative"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <motion.img 
-              src={`${REPO_NAME}/ras_banner.jpg`} 
-              alt="SWARM Demo" 
-              className="w-full h-full object-contain bg-black rounded-2xl shadow-lg" 
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            />
-          </motion.div>
-        </div>
-      </section>
+    <div id="ras-home" className="ras-ds">
 
-      {/* Overview Section */}
-      <section id="overview" className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-0">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl sm:text-4xl font-bold text-yellow-500 mb-6" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: '1px sm:2px' }}>
-                ABSTRACT
-              </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-gray-300 mb-4">
-                El proyecto SWARM es una <strong>iniciativa de investigación estudiantil</strong> que desarrolla plataformas robóticas autónomas para gestión logística.
-              </p>
-              <p className="text-base sm:text-lg leading-relaxed text-gray-300 mb-4">
-                El desarrollo sigue un enfoque iterativo: <strong>MK1</strong> validó el concepto. <strong>MK1.5</strong> es demo. <strong>MK2</strong> (en desarrollo) incorpora capacidades reales de elevación (5-10 kg) y transporte (~20 kg).
-              </p>
-              <p className="text-base sm:text-lg leading-relaxed text-gray-300">
-                La <strong>Fase III</strong> marcará la transición hacia <strong>MK3</strong>, diseñado para cargas de 150-200 kg.
-              </p>
-            </motion.div>
-            <motion.div 
-              className="bg-gradient-to-br from-red-900/10 to-purple-900/10 border-2 border-red-900 rounded-2xl p-6 sm:p-8"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-              whileHover={{ borderColor: '#FAAE1F' }}
-            >
-              <h3 className="text-xl sm:text-2xl font-bold text-yellow-500 mb-4" style={{ fontFamily: "'Space Mono', monospace" }}>
-                ESTADO ACTUAL
-              </h3>
-              <p className="text-sm sm:text-base text-yellow-500 mb-4 leading-relaxed">Proyecto de investigación estudiantil en desarrollo iterativo</p>
-              <SpecItem label="MK1" value="Completado" />
-              <SpecItem label="MK1.5" value="En desarrollo" />
-              <SpecItem label="MK2 - Carga" value="5-10 kg" />
-              <SpecItem label="MK2 - Payload" value="~20 kg" />
-              <SpecItem label="MK3" value="Specs industriales" />
-              <div className="mt-6 pt-4 border-t border-red-900/30">
-                <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                  <span className="text-yellow-500 font-bold">Meta industrial (MK3):</span> Capacidad de carga 150-200 kg
-                </p>
-              </div>
-            </motion.div>
+      {/* ══════════════ NAV ══════════════ */}
+      <header className="nav">
+        <div className="wrap nav-in">
+          <a className="brand" href="#" onClick={scrollTo('top')}>
+            <img src={`${REPO_NAME}/ras_logo_black.png`} alt="RAS Uniandes" />
+            <span className="wm">
+              RAS Uniandes
+              <small>IEEE Robotics &amp; Automation</small>
+            </span>
+          </a>
+
+          <nav className="links">
+            <a href="#" onClick={scrollTo('nosotros')}>Nosotros</a>
+            <a href="#" onClick={scrollTo('proyecto')}>Proyecto</a>
+            <a href="#" onClick={scrollTo('charlas')}>Charlas</a>
+            <a href="#" onClick={scrollTo('spark')}>Robot Spark</a>
+            <a href="#" onClick={scrollTo('aliados')}>Aliados</a>
+            <Link to="/members">Miembros</Link>
+            <Link to="/tools">Herramientas</Link>
+          </nav>
+
+          <div className="nav-right">
+            <button className="theme-btn" aria-label="Cambiar tema" onClick={handleThemeToggle}>
+              <svg className="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4" />
+              </svg>
+              <svg className="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+              </svg>
+            </button>
+            <a href="#" className="btn btn-primary" onClick={scrollTo('aliados')}>
+              Trabajemos juntos <span className="arr">→</span>
+            </a>
           </div>
         </div>
-      </section>
+      </header>
 
-      {/* Phases Section */}
-      <section id="phases" className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-0" style={{ background: 'linear-gradient(180deg, #0a0a0a, rgba(95, 33, 103, 0.1))' }}>
-        <div className="max-w-7xl mx-auto">
-          <motion.h2 
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-yellow-500 mb-12 md:mb-16" 
-            style={{ fontFamily: "'Space Mono', monospace", letterSpacing: '1px sm:3px' }}
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            FASES DE DESARROLLO
-          </motion.h2>
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <PhaseCard number="FASE I" title="PLATAFORMA BASE" description="Desarrollo de la plataforma física. MK1 completado como prueba de concepto. MK2 en desarrollo con chasis reforzado y arquitectura ROS documentada." />
-            <PhaseCard number="FASE II" title="AUTONOMÍA INDIVIDUAL" description="Implementación de algoritmos SLAM, reconocimiento visual con seguimiento, evasión de obstáculos e identificación ArUco." />
-            <PhaseCard number="FASE III" title="COLABORACIÓN MULTI-ROBOT" description="Desarrollo de versiones replicables para pruebas de consenso y colaboración entre múltiples unidades." />
-          </motion.div>
+      <main id="top">
+
+        {/* ══════════════ HERO ══════════════ */}
+        <section className="hero">
+          <div className="wrap hero-grid">
+            <div className="hero-copy stagger">
+              <span className="eyebrow">Capítulo estudiantil IEEE · Universidad de los Andes</span>
+              <h1>Robótica, innovación<br />y <span className="em">compromiso social</span></h1>
+              <p className="lead">
+                Somos uno de los capítulos técnicos más activos de la Universidad de los Andes:
+                un espacio de convergencia para apasionados por el desarrollo tecnológico,
+                la investigación aplicada y la divulgación científica.
+              </p>
+              <div className="cta-row">
+                <a href="#" className="btn btn-primary btn-lg" onClick={scrollTo('aliados')}>
+                  Trabajemos juntos <span className="arr">→</span>
+                </a>
+                <a href="#" className="btn btn-ghost btn-lg" onClick={scrollTo('proyecto')}>
+                  Conoce el proyecto
+                </a>
+              </div>
+              <div className="meta">
+                <div className="m"><b>+30</b><span>Miembros activos</span></div>
+                <div className="m"><b>1</b><span>Proyecto insignia</span></div>
+                <div className="m"><b>3</b><span>Áreas técnicas</span></div>
+              </div>
+            </div>
+
+            <div className="hero-media reveal">
+              <div className="accentbar" />
+              <div className="frame">
+                <img
+                  src={`${REPO_NAME}/team-banner.jpg`}
+                  alt="Equipo RAS Uniandes con la bandera del capítulo"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════ LOGO STRIP ══════════════ */}
+        <div className="strip">
+          <div className="wrap strip-in">
+            <div className="label">Respaldados y en alianza con</div>
+            <div className="marks">
+              <span className="wordmark">
+                Universidad de los Andes
+                <small>IEEE Student Branch</small>
+              </span>
+              <span className="wordmark">
+                IEEE RAS
+                <small>Robotics &amp; Automation Society</small>
+              </span>
+              <span className="wordmark">Fundación Ecopetrol</span>
+              <span className="wordmark">
+                Laboratorio Crea
+                <small>Uniandes</small>
+              </span>
+            </div>
+          </div>
         </div>
-      </section>
 
-      {/* Tech Section */}
-      <section id="tech" className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-0">
-        <div className="max-w-7xl mx-auto">
-          <motion.h2 
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-yellow-500 mb-12 md:mb-16" 
-            style={{ fontFamily: "'Space Mono', monospace", letterSpacing: '1px sm:3px' }}
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            STACK TECNOLÓGICO
-          </motion.h2>
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <TechCategory title="MECÁNICA Y DISEÑO" items={['Fusion 360 CAD', 'Mecanismo elevador', 'Chasis reforzado', 'Diseño modular', 'Análisis FEA']} />
-            <TechCategory title="ELECTRÓNICA Y CONTROL" items={['PCBs KiCad', 'ESP32 y Arduino', 'Protocolos CAN/UART', 'LiDAR e IMU', 'Controladores motores']} />
-            <TechCategory title="SOFTWARE Y ALGORITMOS" items={['Arquitectura ROS2', 'Python y C++', 'SLAM', 'OpenCV', 'Machine Learning']} />
-            <TechCategory title="SISTEMAS AVANZADOS" items={['Navegación autónoma', 'Algoritmos consenso', 'Interfaces HRI', 'RViz y Gazebo', 'Control de flota']} />
-          </motion.div>
-        </div>
-      </section>
+        {/* ══════════════ NOSOTROS ══════════════ */}
+        <section className="block" id="nosotros">
+          <div className="wrap split">
+            <div className="media reveal">
+              <div className="media-card">
+                <img
+                  src={`${REPO_NAME}/team-project.jpg`}
+                  alt="Equipo presentando el robot del proyecto insignia"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            <div className="copy reveal">
+              <span className="eyebrow">¿Qué es RAS Uniandes?</span>
+              <div className="sec-head">
+                <h2>Un punto de convergencia técnico</h2>
+              </div>
+              <div className="prose" style={{ marginTop: 20 }}>
+                <p>
+                  RAS Uniandes es el capítulo estudiantil de la{' '}
+                  <strong>Robotics and Automation Society (RAS)</strong> de la IEEE en la
+                  Universidad de los Andes — una de las organizaciones técnicas más sólidas
+                  y activas de la institución.
+                </p>
+                <p>
+                  Más allá de la investigación, fomentamos un entorno de aprendizaje práctico
+                  donde el dominio de herramientas de vanguardia es prioridad, con capacitación
+                  continua en distintas áreas técnicas y de desarrollo profesional.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
-      {/* Roadmap Section */}
-      <section id="roadmap" className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-0" style={{ background: 'linear-gradient(135deg, #862633, #5F2167)' }}>
-        <div className="max-w-7xl mx-auto">
-          <motion.div 
-            className="bg-black/30 border-2 border-yellow-500/30 rounded-3xl p-6 sm:p-8 md:p-12"
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            whileHover={{ borderColor: '#FAAE1F' }}
-          >
-            <h3 className="text-2xl sm:text-3xl font-bold text-center text-yellow-500 mb-8 md:mb-12" style={{ fontFamily: "'Space Mono', monospace" }}>
-              ROADMAP
-            </h3>
-            <motion.div 
-              className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8"
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-            >
-              <RoadmapItem title="MK1: Navegación" description="Resolver obstáculos de navegación autónoma mediante simulación y pruebas." />
-              <RoadmapItem title="MK2: Desarrollo Mecánico" description="Mejorar diseño físico, confiabilidad hardware e integración de sensores." />
-              <RoadmapItem title="MK3: Plataforma Colaborativa" description="Desarrollo de plataforma para explorar algoritmos avanzados multiagente." />
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
+        {/* ══════════════ STATS ══════════════ */}
+        <section className="block" style={{ paddingTop: 0 }}>
+          <div className="wrap reveal">
+            <div className="statline">
+              <div className="s">
+                <span className="val">30+</span>
+                <span className="lbl">Miembros activos</span>
+              </div>
+              <div className="s">
+                <span className="val">3–7</span>
+                <span className="lbl">Semestres de participación típica</span>
+              </div>
+              <div className="s">
+                <span className="val">5+</span>
+                <span className="lbl">Colaboraciones con aliados externos</span>
+              </div>
+              <div className="s">
+                <span className="val">6+</span>
+                <span className="lbl">Charlas técnicas abiertas por semestre</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
-      {/* Footer */}
-      <footer className="bg-black/95 border-t-2 border-red-900 py-8 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <motion.div 
-            className="flex justify-center gap-6 sm:gap-8 mb-6 flex-wrap"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <motion.a 
-              href="https://www.instagram.com/ras_uniandes/?hl=en" 
-              target="_blank" 
-              rel="noopener" 
-              className="text-gray-300 hover:text-yellow-500 transition"
-              whileHover={{ scale: 1.2, rotate: 10 }}
-            >
-              <Instagram className="w-6 h-6 sm:w-7 sm:h-7" />
-            </motion.a>
-            <motion.a 
-              href="https://www.linkedin.com/company/rasuniandes?originalSubdomain=co" 
-              target="_blank" 
-              rel="noopener" 
-              className="text-gray-300 hover:text-yellow-500 transition"
-              whileHover={{ scale: 1.2, rotate: 10 }}
-            >
-              <Linkedin className="w-6 h-6 sm:w-7 sm:h-7" />
-            </motion.a>
-            <motion.a 
-              href="https://www.youtube.com/@RasUniandes" 
-              target="_blank" 
-              rel="noopener" 
-              className="text-gray-300 hover:text-yellow-500 transition"
-              whileHover={{ scale: 1.2, rotate: 10 }}
-            >
-              <Youtube className="w-6 h-6 sm:w-7 sm:h-7" />
-            </motion.a>
-          </motion.div>
-          <p className="text-sm sm:text-base text-gray-300">&copy; 2025 RAS Uniandes - Universidad de Los Andes</p>
-          <p className="text-yellow-500 font-semibold tracking-wider text-sm sm:text-base">IEEE ROBOTICS AND AUTOMATION SOCIETY</p>
-          <p className="text-yellow-500 italic mt-4 text-sm sm:text-base">Advancing Technology for Humanity</p>
+        {/* ══════════════ PROYECTO ══════════════ */}
+        <section className="block" id="proyecto" style={{ paddingTop: 0 }}>
+          <div className="wrap split rev">
+            <div className="media reveal">
+              <div className="media-card" style={{ aspectRatio: '4/3' }}>
+                <img
+                  src={`${REPO_NAME}/robot-project.png`}
+                  alt="Robot del proyecto insignia con visión por computadora"
+                  style={{ objectPosition: 'center 40%' }}
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            <div className="copy reveal">
+              <span className="eyebrow">Ecosistema técnico · Proyecto insignia</span>
+              <div className="sec-head">
+                <h2>Robótica industrial,<br />investigada durante un año</h2>
+              </div>
+              <div className="prose" style={{ marginTop: 18 }}>
+                <p>
+                  Nuestra piedra angular es un{' '}
+                  <strong>proyecto de robótica industrial</strong> que hemos desarrollado e
+                  investigado de forma continua durante el último año, integrando visión por
+                  computadora, control y diseño mecánico.
+                </p>
+                <p>
+                  Es la plataforma donde nuestros miembros aplican lo aprendido y donde
+                  mostramos el estado actual de la robótica en Colombia.
+                </p>
+              </div>
+              <a href="#" className="btn btn-ghost" style={{ marginTop: 8 }} onClick={scrollTo('aliados')}>
+                Colabora con el proyecto <span className="arr">→</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════ CHARLAS ══════════════ */}
+        <section className="block" id="charlas" style={{ paddingTop: 0 }}>
+          <div className="wrap">
+            <div className="sec-head reveal">
+              <span className="eyebrow">Promoción de la educación abierta</span>
+              <h2>Charlas técnicas, abiertas cada semestre</h2>
+              <p>
+                Sesiones lideradas por miembros de nuestra iniciativa —speakers apasionados
+                por su trabajo— que exploran tecnologías emergentes y herramientas de alta utilidad.
+              </p>
+            </div>
+            <div className="cards stagger">
+              <article className="card">
+                <div className="glow" />
+                <div className="num">01 / Software</div>
+                <h3>Programación &amp; Software</h3>
+                <p>De fundamentos sólidos a automatización moderna mediante agentes de IA.</p>
+                <div className="tags">
+                  <span className="tag">C++</span>
+                  <span className="tag">Agent Tooling</span>
+                  <span className="tag">N8N</span>
+                </div>
+              </article>
+              <article className="card">
+                <div className="glow" />
+                <div className="num">02 / Hardware</div>
+                <h3>Hardware &amp; Diseño</h3>
+                <p>Diseño de circuitos impresos y programación de microcontroladores para sistemas reales.</p>
+                <div className="tags">
+                  <span className="tag">PCB</span>
+                  <span className="tag">Microcontroladores</span>
+                  <span className="tag">Embedded</span>
+                </div>
+              </article>
+              <article className="card">
+                <div className="glow" />
+                <div className="num">03 / Mecánica</div>
+                <h3>Diseño Mecánico</h3>
+                <p>Modelado 3D para prototipado avanzado y validación de mecanismos.</p>
+                <div className="tags">
+                  <span className="tag">CAD</span>
+                  <span className="tag">Modelado 3D</span>
+                  <span className="tag">Prototipado</span>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════ ROBOT SPARK ══════════════ */}
+        <section className="block spark" id="spark">
+          <div className="wrap spark-grid">
+            <div className="copy reveal">
+              <span className="eyebrow">Impacto social &amp; extensión</span>
+              <div className="sec-head">
+                <h2>RAS Robot Spark</h2>
+                <p>
+                  Formamos a las nuevas generaciones en STEM. A través de un ciclo de sesiones,
+                  llevamos la robótica a estudiantes de colegio de manera gradual y progresiva.
+                </p>
+              </div>
+              <div className="partners">
+                <span className="partner"><span className="pd" />Fundación Ecopetrol</span>
+                <span className="partner"><span className="pd" />Laboratorio Crea · Uniandes</span>
+              </div>
+            </div>
+            <div className="media reveal">
+              <div className="media-card" style={{ aspectRatio: '5/4' }}>
+                <img
+                  src={`${REPO_NAME}/robot-spark-session.jpg`}
+                  alt="Sesión formativa de RAS Robot Spark con estudiantes de colegio"
+                  style={{ objectPosition: 'center 30%' }}
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════ CTA ══════════════ */}
+        <section className="block cta" id="aliados">
+          <div className="wrap reveal">
+            <div className="cta-inner">
+              <span className="eyebrow center">Identidad &amp; comunidad</span>
+              <h2>
+                Trabajemos juntos
+                <span className="en">Let's work together</span>
+              </h2>
+              <div className="cta-cards">
+                <div className="cta-card">
+                  <div className="k">Para empresas &amp; aliados</div>
+                  <h3>Sé un aliado o patrocinador</h3>
+                  <p>
+                    Colaboramos con la Universidad en ferias y eventos académicos, sirviendo
+                    como referentes de la robótica en Colombia. Construyamos juntos el futuro
+                    de la ingeniería.
+                  </p>
+                  <a href="mailto:rasuniandes@uniandes.edu.co" className="btn btn-primary">
+                    Hablemos de alianza <span className="arr">→</span>
+                  </a>
+                </div>
+                <div className="cta-card">
+                  <div className="k">Para estudiantes</div>
+                  <h3>Únete al equipo</h3>
+                  <p>
+                    Somos un equipo unido por la innovación y la excelencia técnica.
+                    Si te apasiona la robótica, la investigación y la divulgación,
+                    hay un lugar para ti.
+                  </p>
+                  <a href="mailto:rasuniandes@uniandes.edu.co" className="btn btn-ghost">
+                    Quiero unirme <span className="arr">→</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      {/* ══════════════ FOOTER ══════════════ */}
+      <footer>
+        <div className="wrap">
+          <div className="foot-grid">
+            <div className="foot-brand">
+              <img
+                src={`${REPO_NAME}/ras_logo.png`}
+                alt="RAS Uniandes — IEEE Robotics &amp; Automation Society · Universidad de los Andes"
+              />
+              <p>
+                Capítulo estudiantil de la IEEE Robotics &amp; Automation Society
+                en la Universidad de los Andes.
+              </p>
+            </div>
+
+            <div className="foot-col">
+              <h4>Navegación</h4>
+              <a href="#" onClick={scrollTo('nosotros')}>Nosotros</a>
+              <a href="#" onClick={scrollTo('proyecto')}>Proyecto insignia</a>
+              <a href="#" onClick={scrollTo('charlas')}>Charlas técnicas</a>
+              <a href="#" onClick={scrollTo('spark')}>Robot Spark</a>
+            </div>
+
+            <div className="foot-col">
+              <h4>Comunidad</h4>
+              <a href="#" onClick={scrollTo('aliados')}>Sé aliado</a>
+              <a href="#" onClick={scrollTo('aliados')}>Únete al equipo</a>
+              <Link to="/members">Miembros</Link>
+              <Link to="/tools">Herramientas</Link>
+            </div>
+
+            <div className="foot-col">
+              <h4>Contacto</h4>
+              <a href="mailto:rasuniandes@uniandes.edu.co">rasuniandes@uniandes.edu.co</a>
+              <a href="https://www.instagram.com/ras_uniandes/" target="_blank" rel="noopener noreferrer">
+                Instagram
+              </a>
+              <a href="https://www.linkedin.com/company/rasuniandes" target="_blank" rel="noopener noreferrer">
+                LinkedIn
+              </a>
+              <a href="https://www.youtube.com/@RasUniandes" target="_blank" rel="noopener noreferrer">
+                YouTube
+              </a>
+            </div>
+          </div>
+
+          <div className="foot-bot">
+            <span>© 2025 RAS Uniandes · IEEE Student Branch</span>
+            <span>Bogotá · Colombia</span>
+          </div>
         </div>
       </footer>
 
-      <style>{`
-        @keyframes gridScroll {
-          0% { transform: translate(0, 0); }
-          100% { transform: translate(40px, 40px); }
-        }
-      `}</style>
     </div>
-  );
-}
-
-
-function SpecItem({ label, value }: { label: string; value: string }) {
-  return (
-    <motion.div 
-      className="flex justify-between py-3 border-b border-red-900/30 text-base"
-      initial={{ opacity: 0, x: -10 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.3 }}
-      viewport={{ once: true }}
-    >
-      <span className="text-gray-300">{label}</span>
-      <span className="text-white font-semibold">{value}</span>
-    </motion.div>
-  );
-}
-
-function PhaseCard({ number, title, description }: { number: string; title: string; description: string }) {
-  return (
-    <motion.div 
-      className="bg-gradient-to-br from-red-900/10 to-purple-900/10 border-2 border-red-900 rounded-2xl p-8 group"
-      variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
-      whileHover={{ y: -8, borderColor: '#FAAE1F' }}
-      transition={{ duration: 0.4 }}
-    >
-      <div className="text-5xl font-bold text-red-900/30 mb-3" style={{ fontFamily: "'Space Mono', monospace" }}>
-        {number}
-      </div>
-      <h3 className="text-2xl font-bold text-yellow-500 mb-4">{title}</h3>
-      <p className="text-base text-gray-300 leading-relaxed">{description}</p>
-    </motion.div>
-  );
-}
-
-function TechCategory({ title, items }: { title: string; items: string[] }) {
-  return (
-    <motion.div 
-      className="bg-gradient-to-br from-purple-900/15 to-black/50 border-l-4 border-red-900 p-8 rounded-xl"
-      variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0, transition: { duration: 0.5 } } }}
-      whileHover={{ borderColor: '#FAAE1F' }}
-    >
-      <h3 className="text-xl font-bold text-yellow-500 mb-4" style={{ fontFamily: "'Space Mono', monospace" }}>
-        {title}
-      </h3>
-      <ul className="space-y-3">
-        {items.map((item, i) => (
-          <motion.li 
-            key={i} 
-            className="text-base text-gray-300 hover:text-white transition border-b border-red-900/30 pb-3 last:border-b-0 last:pb-0"
-            initial={{ opacity: 0, x: -10 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.1 }}
-            viewport={{ once: true }}
-            whileHover={{ x: 5 }}
-          >
-            <span className="text-red-900 font-bold mr-3">▸</span>
-            {item}
-          </motion.li>
-        ))}
-      </ul>
-    </motion.div>
-  );
-}
-
-function RoadmapItem({ title, description }: { title: string; description: string }) {
-  return (
-    <motion.div
-      variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
-      whileHover={{ x: 5 }}
-    >
-      <h4 className="text-xl font-semibold text-yellow-500 mb-3">{title}</h4>
-      <p className="text-base text-white leading-relaxed">{description}</p>
-    </motion.div>
   );
 }

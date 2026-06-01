@@ -1,10 +1,11 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 
 export default function LipoEstimator() {
-  const [voltage, setVoltage] = useState<number>(11.1); // 3S default
-  const [capacity, setCapacity] = useState<number>(2200); // mAh
+  const [voltage, setVoltage] = useState<number>(11.1);
+  const [capacity, setCapacity] = useState<number>(2200);
   const [cRating, setCRating] = useState<number>(25);
-  const [currentDraw, setCurrentDraw] = useState<number>(15); // A
+  const [currentDraw, setCurrentDraw] = useState<number>(15);
 
   const results = useMemo(() => {
     const capacityAh = capacity / 1000;
@@ -14,7 +15,6 @@ export default function LipoEstimator() {
     const runtimeMinutes = runtimeHours * 60;
     const powerDraw = voltage * currentDraw;
     const isOverdraw = currentDraw > maxContinuousCurrent;
-
     return {
       energyWh: energyWh.toFixed(2),
       maxContinuousCurrent: maxContinuousCurrent.toFixed(2),
@@ -25,93 +25,115 @@ export default function LipoEstimator() {
   }, [voltage, capacity, cRating, currentDraw]);
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
-      <div className="w-full max-w-3xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-8 space-y-8">
+    <section className="block">
+      <div className="wrap">
 
-        {/* Encabezado */}
-        <div>
-          <h1 className="text-2xl font-semibold text-amber-400">
-            Estimador de Batería LiPo
-          </h1>
-          <p className="text-sm text-slate-400">
-            Tiempo de Ejecución • Seguridad de Descarga • Análisis de Energía
-          </p>
+        <div className="page-header">
+          <nav className="breadcrumb">
+            <Link to="/">Inicio</Link>
+            <span className="sep">/</span>
+            <Link to="/tools">Herramientas</Link>
+            <span className="sep">/</span>
+            <span>LiPo Estimator</span>
+          </nav>
+          <span className="eyebrow">Análisis de energía</span>
+          <div className="sec-head">
+            <h2>Estimador de Batería LiPo</h2>
+            <p>Tiempo de ejecución · Seguridad de descarga · Análisis de energía</p>
+          </div>
         </div>
 
-        {/* Entradas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="tool-layout reveal">
 
-          <Input label="Voltaje de Batería (V)" value={voltage} setValue={setVoltage} step={0.1} />
-          <Input label="Capacidad (mAh)" value={capacity} setValue={setCapacity} step={100} />
-          <Input label="Clasificación C" value={cRating} setValue={setCRating} step={1} />
-          <Input label="Corriente (A)" value={currentDraw} setValue={setCurrentDraw} step={0.5} />
-
-        </div>
-
-        {/* Resultados */}
-        <div className="bg-gradient-to-br from-amber-500/10 to-amber-600/10 border border-amber-500/30 rounded-xl p-6 space-y-4">
-
-          <h2 className="text-lg font-semibold text-amber-400">
-            Rendimiento de Batería
-          </h2>
-
-          <Result label="Tiempo Estimado" value={`${results.runtimeMinutes} min`} />
-          <Result label="Capacidad Energética" value={`${results.energyWh} Wh`} />
-          <Result label="Consumo de Potencia" value={`${results.powerDraw} W`} />
-          <Result label="Corriente Continua Máxima" value={`${results.maxContinuousCurrent} A`} />
-
-          {results.isOverdraw && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 rounded-lg">
-              ⚠️ ¡El consumo de corriente excede la clasificación de descarga continua segura!
+          {/* ── Inputs ── */}
+          <div className="tool-inputs">
+            <div className="field">
+              <label>Voltaje de batería (V)</label>
+              <input
+                type="number"
+                value={voltage}
+                step={0.1}
+                min={0}
+                onChange={(e) => setVoltage(parseFloat(e.target.value) || 0)}
+              />
+              <span className="hint">3.7 V por celda · 3S = 11.1 V, 4S = 14.8 V</span>
             </div>
-          )}
+            <div className="field">
+              <label>Capacidad (mAh)</label>
+              <input
+                type="number"
+                value={capacity}
+                step={100}
+                min={0}
+                onChange={(e) => setCapacity(parseFloat(e.target.value) || 0)}
+              />
+            </div>
+            <div className="field">
+              <label>Clasificación C</label>
+              <input
+                type="number"
+                value={cRating}
+                step={1}
+                min={1}
+                onChange={(e) => setCRating(parseFloat(e.target.value) || 1)}
+              />
+              <span className="hint">Descarga continua máxima = Capacidad (Ah) × C</span>
+            </div>
+            <div className="field">
+              <label>Corriente de consumo (A)</label>
+              <input
+                type="number"
+                value={currentDraw}
+                step={0.5}
+                min={0}
+                onChange={(e) => setCurrentDraw(parseFloat(e.target.value) || 0)}
+              />
+            </div>
+
+            <div className="tool-formula">
+              <p>Energía (Wh) = Voltaje × Capacidad (Ah)</p>
+              <p>Corriente máxima = Capacidad (Ah) × C-rating</p>
+              <p>Tiempo = Capacidad (Ah) ÷ Corriente</p>
+            </div>
+          </div>
+
+          {/* ── Results ── */}
+          <div className="result-panel">
+            <span className="eyebrow">Resultados</span>
+            <div className="result-number">
+              {results.runtimeMinutes}
+              <small>min</small>
+            </div>
+            <p className="result-meta">
+              {voltage} V · {capacity} mAh · {cRating}C · {currentDraw} A
+            </p>
+
+            <div className="result-row">
+              <span className="result-label">Tiempo estimado</span>
+              <span className="result-value">{results.runtimeMinutes} min</span>
+            </div>
+            <div className="result-row">
+              <span className="result-label">Capacidad energética</span>
+              <span className="result-value">{results.energyWh} Wh</span>
+            </div>
+            <div className="result-row">
+              <span className="result-label">Consumo de potencia</span>
+              <span className="result-value">{results.powerDraw} W</span>
+            </div>
+            <div className="result-row">
+              <span className="result-label">Corriente continua máxima</span>
+              <span className="result-value">{results.maxContinuousCurrent} A</span>
+            </div>
+
+            {results.isOverdraw && (
+              <div className="warning-banner">
+                El consumo ({currentDraw} A) excede la descarga continua segura ({results.maxContinuousCurrent} A). Riesgo de daño a la batería.
+              </div>
+            )}
+          </div>
 
         </div>
-
-        {/* Información de Ingeniería */}
-        <div className="text-xs text-slate-500 space-y-1">
-          <p>Energía (Wh) = Voltaje × Capacidad (Ah)</p>
-          <p>Corriente Máxima = Capacidad (Ah) × Clasificación C</p>
-          <p>Tiempo de Ejecución = Capacidad (Ah) ÷ Corriente</p>
-        </div>
-
       </div>
-    </div>
-  );
-}
-
-function Input({
-  label,
-  value,
-  setValue,
-  step,
-}: {
-  label: string;
-  value: number;
-  setValue: (v: number) => void;
-  step: number;
-}) {
-  return (
-    <div>
-      <label className="text-sm text-slate-400 block mb-1">
-        {label}
-      </label>
-      <input
-        type="number"
-        value={value}
-        step={step}
-        onChange={(e) => setValue(parseFloat(e.target.value) || 0)}
-        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-      />
-    </div>
-  );
-}
-
-function Result({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between text-sm">
-      <span className="text-slate-400">{label}</span>
-      <span className="text-amber-400 font-medium">{value}</span>
-    </div>
+    </section>
   );
 }

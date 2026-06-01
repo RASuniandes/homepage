@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Plus, Lock, X } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../../utils/config';
 import type { Member } from './memberType';
@@ -13,6 +12,17 @@ import { toast } from 'react-toastify';
 const AUTH_TOKEN_KEY = 'admin_auth_token';
 const AUTH_EXPIRY_KEY = 'admin_auth_expiry';
 
+const AREA_FILTERS = [
+  { id: 'all', label: 'Todos' },
+  { id: 'software', label: 'Software' },
+  { id: 'hardware', label: 'Hardware' },
+  { id: 'mecanica', label: 'Mecánica' },
+  { id: 'directiva', label: 'Directiva' },
+  { id: 'spark', label: 'Robot Spark' },
+] as const;
+
+type FilterId = typeof AREA_FILTERS[number]['id'];
+
 export default function MembersPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [membersToAdd, setMembersToAdd] = useState<Member[]>([]);
@@ -22,6 +32,7 @@ export default function MembersPage() {
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState<'existing' | 'toAdd'>('existing');
+  const [activeFilter, setActiveFilter] = useState<FilterId>('all');
 
   useEffect(() => {
     checkAuthStatus();
@@ -31,12 +42,9 @@ export default function MembersPage() {
   const checkAuthStatus = () => {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);
     const expiry = localStorage.getItem(AUTH_EXPIRY_KEY);
-
     if (token && expiry && new Date().getTime() < parseInt(expiry)) {
       setIsAuthenticated(true);
-      if (activeTab === 'toAdd') {
-        fetchMembersToAdd();
-      }
+      if (activeTab === 'toAdd') fetchMembersToAdd();
     } else {
       localStorage.removeItem(AUTH_TOKEN_KEY);
       localStorage.removeItem(AUTH_EXPIRY_KEY);
@@ -49,7 +57,7 @@ export default function MembersPage() {
       setLoading(true);
       const response = await axios.get(`${API_URL}/members`);
       if (response.status !== 200) throw new Error('Error al cargar miembros');
-      const data = response.data.map((member: Record<string, unknown>) => snakeToCamelObject(member));
+      const data = response.data.map((m: Record<string, unknown>) => snakeToCamelObject(m));
       setMembers(data);
     } catch {
       toast.error('No se pudieron cargar los miembros');
@@ -62,8 +70,8 @@ export default function MembersPage() {
     try {
       setLoading(true);
       const response = await axios.get(`${API_URL}/members/to_add`);
-      if (response.status !== 200) throw new Error('Error al cargar miembros');
-      const data = response.data.map((member: Record<string, unknown>) => snakeToCamelObject(member));
+      if (response.status !== 200) throw new Error('Error al cargar solicitudes');
+      const data = response.data.map((m: Record<string, unknown>) => snakeToCamelObject(m));
       setMembersToAdd(data);
     } catch {
       toast.error('No se pudieron cargar los miembros');
@@ -74,18 +82,12 @@ export default function MembersPage() {
 
   const handleAuthorize = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
-      const response = await axios.post(`${API_URL}/members/authorize`, {
-        password: adminPassword
-      });
-
+      const response = await axios.post(`${API_URL}/members/authorize`, { password: adminPassword });
       if (response.status !== 200) throw new Error('Contraseña incorrecta');
-
       const expiryTime = new Date().getTime() + (2 * 60 * 60 * 1000);
       localStorage.setItem(AUTH_TOKEN_KEY, 'authenticated');
       localStorage.setItem(AUTH_EXPIRY_KEY, expiryTime.toString());
-
       setIsAuthenticated(true);
       toast.success('Acceso autorizado por 2 horas.');
       setAdminPassword('');
@@ -118,188 +120,164 @@ export default function MembersPage() {
     toast.info('Sesión cerrada');
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-  };
+  // Derived: apply area filter to the active tab's member list
+  const displayedMembers = useMemo(() => {
+    const base = activeTab === 'existing' ? members : membersToAdd;
+    if (activeFilter === 'all') return base;
+    if (activeFilter === 'directiva') return base.filter(m => m.isInCouncil);
+    if (activeFilter === 'spark') return base.filter(m => m.project?.toLowerCase().includes('spark'));
+    return base.filter(m =>
+      m.role?.toLowerCase().includes(activeFilter) ||
+      m.skills?.some(s => s.toLowerCase().includes(activeFilter))
+    );
+  }, [members, membersToAdd, activeTab, activeFilter]);
 
   return (
-    <div className="min-h-screen text-white overflow-x-hidden" style={{ fontFamily: "'Rajdhani', sans-serif" }}>
-      {/* Header Section */}
-      <section className="min-h-[40vh] flex items-center pt-12 sm:pt-16 md:pt-20 relative px-4 sm:px-6 md:px-0">
-        <div className="max-w-7xl mx-auto w-full">
-          <motion.h1
-            className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4"
-            style={{
-              fontFamily: "'Space Mono', monospace",
-              background: 'linear-gradient(135deg, #862633, #FAAE1F)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: '1px sm:2px',
-            }}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            EQUIPO SWARM
-          </motion.h1>
-          <motion.p
-            className="text-base sm:text-lg md:text-xl text-gray-300 mb-6 sm:mb-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            Investigadores y desarrolladores dedicados a la robótica autónoma
-          </motion.p>
-
-          {/* Action Buttons */}
-          <motion.div
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            <button
-              onClick={() => setShowJoinModal(true)}
-              className="w-full sm:w-auto px-6 py-3 bg-black border border-white text-white rounded-lg font-semibold hover:bg-yellow-400 transition flex items-center justify-center sm:justify-start gap-2"
-            >
-              <Plus className="w-5 h-5" />
-              Solicitar Membresía
+    <>
+      {/* Page header */}
+      <section className="block page-header">
+        <div className="wrap">
+          <nav className="breadcrumb">
+            <Link to="/">Inicio</Link>
+            <span className="sep">/</span>
+            <span>Miembros</span>
+          </nav>
+          <span className="eyebrow">Identidad &amp; comunidad</span>
+          <div className="sec-head">
+            <h2>El equipo</h2>
+            <p>Investigadores y desarrolladores dedicados a la robótica autónoma en Uniandes.</p>
+          </div>
+          <div className="cta-row">
+            <button className="btn btn-primary" onClick={() => setShowJoinModal(true)}>
+              Solicitar membresía <span className="arr">→</span>
             </button>
-            {!isAuthenticated ? (
-              <button
-                onClick={() => setShowPasswordModal(true)}
-                className="w-full sm:w-auto px-6 py-3 bg-red-900/50 border-2 border-red-900 text-white rounded-lg font-semibold hover:border-yellow-500 transition flex items-center justify-center sm:justify-start gap-2"
-              >
-                <Lock className="w-5 h-5" />
-                Administrar
-              </button>
-            ) : (
-              <button
-                onClick={handleLogout}
-                className="w-full sm:w-auto px-6 py-3 bg-green-600 hover:bg-red-600 text-white rounded-lg font-semibold transition"
-              >
-                Autorizado
-              </button>
-            )}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Tabs */}
-      <section className="py-6 sm:py-8 border-b border-slate-800 px-4 sm:px-6 md:px-0">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex gap-2 sm:gap-4 overflow-x-auto">
-            <button
-              onClick={() => setActiveTab('existing')}
-              className={`px-4 sm:px-6 py-2 sm:py-3 font-semibold text-sm sm:text-base transition whitespace-nowrap ${
-                activeTab === 'existing'
-                  ? 'text-yellow-500 border-b-2 border-yellow-500'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Miembros Actuales
-            </button>
-            {isAuthenticated && (
-              <button
-                onClick={() => {
-                  setActiveTab('toAdd');
-                  fetchMembersToAdd();
-                }}
-                className={`px-4 sm:px-6 py-2 sm:py-3 font-semibold text-sm sm:text-base transition whitespace-nowrap ${
-                  activeTab === 'toAdd'
-                    ? 'text-yellow-500 border-b-2 border-yellow-500'
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Solicitudes Pendientes
-              </button>
-            )}
+            {!isAuthenticated
+              ? (
+                <button className="btn btn-ghost" onClick={() => setShowPasswordModal(true)}>
+                  Administrar
+                </button>
+              ) : (
+                <button className="btn btn-ghost" onClick={handleLogout}>
+                  Autorizado ✓
+                </button>
+              )
+            }
           </div>
         </div>
       </section>
 
-      {/* Members Grid */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-0">
-        <div className="max-w-7xl mx-auto">
-          {loading ? (
-            <div className="text-center text-gray-300 text-sm sm:text-base">Cargando miembros...</div>
-          ) : (
-            <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 items-stretch"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              {activeTab === 'existing'
-                ? members.length > 0
-                  ? members.map((member) => (
-                      <MemberCard key={member.id} member={member} />
-                    ))
-                  : <p className="text-gray-400 text-sm sm:text-base">No hay miembros disponibles</p>
-                : membersToAdd.length > 0
-                ? membersToAdd.map((member) => (
-                    <MemberCard key={member.id} member={member} isAdmin={isAuthenticated} onApproved={() => approveRequest(member.id)} />
-                  ))
-                : <p className="text-gray-400 text-sm sm:text-base">No hay solicitudes pendientes</p>
-              }
-            </motion.div>
+      {/* Filter chips + grid */}
+      <section className="block" style={{ paddingTop: 32 }}>
+        <div className="wrap">
+
+          {/* Area filter */}
+          <div className="filter-chips">
+            {AREA_FILTERS.map(f => (
+              <button
+                key={f.id}
+                className={`chip${activeFilter === f.id ? ' active' : ''}`}
+                onClick={() => setActiveFilter(f.id)}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Admin tabs (only visible when authenticated) */}
+          {isAuthenticated && (
+            <div className="filter-chips" style={{ marginTop: 10 }}>
+              <button
+                className={`chip${activeTab === 'existing' ? ' active' : ''}`}
+                onClick={() => setActiveTab('existing')}
+              >
+                Miembros actuales
+              </button>
+              <button
+                className={`chip${activeTab === 'toAdd' ? ' active' : ''}`}
+                onClick={() => { setActiveTab('toAdd'); fetchMembersToAdd(); }}
+              >
+                Solicitudes pendientes
+              </button>
+            </div>
           )}
+
+          {/* Grid */}
+          {loading ? (
+            <div className="empty-state"><p>Cargando miembros…</p></div>
+          ) : displayedMembers.length === 0 ? (
+            <div className="empty-state">
+              <p>{activeTab === 'toAdd' ? 'No hay solicitudes pendientes.' : 'No hay miembros en esta categoría.'}</p>
+            </div>
+          ) : (
+            <div className="members-grid stagger">
+              {displayedMembers.map(member => (
+                <MemberCard
+                  key={member.id}
+                  member={member}
+                  isAdmin={isAuthenticated && activeTab === 'toAdd'}
+                  onApproved={() => approveRequest(member.id)}
+                />
+              ))}
+            </div>
+          )}
+
         </div>
       </section>
 
-      {/* Password Modal */}
+      {/* Admin password modal */}
       {showPasswordModal && (
-        <Modal onClose={() => setShowPasswordModal(false)}>
-          <h2 className="text-xl sm:text-2xl font-bold text-yellow-500 mb-6">Autorización de Admin</h2>
-          <form onSubmit={handleAuthorize} className="space-y-4">
-            <input
-              type="password"
-              placeholder="Contraseña de administrador"
-              value={adminPassword}
-              onChange={(e) => setAdminPassword(e.target.value)}
-              className="w-full bg-slate-800 border border-amber-500/30 rounded-lg px-4 py-2 text-white text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-400"
-              autoFocus
-            />
-            <button
-              type="submit"
-              className="w-full px-4 py-2 bg-yellow-500 text-black rounded-lg font-semibold hover:bg-yellow-400 transition text-sm sm:text-base"
-            >
-              Autorizar
-            </button>
-          </form>
-        </Modal>
+        <AdminPasswordModal
+          password={adminPassword}
+          onPasswordChange={setAdminPassword}
+          onSubmit={handleAuthorize}
+          onClose={() => setShowPasswordModal(false)}
+        />
       )}
 
-      {/* Join Request Modal */}
+      {/* Join request modal */}
       {showJoinModal && (
-        <RequestJoinModal onClose={() => setShowJoinModal(false)} onSuccess={() => fetchMembers()} />
+        <RequestJoinModal onClose={() => setShowJoinModal(false)} onSuccess={fetchMembers} />
       )}
-    </div>
+    </>
   );
 }
 
-function Modal({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
+function AdminPasswordModal({
+  password,
+  onPasswordChange,
+  onSubmit,
+  onClose,
+}: {
+  password: string;
+  onPasswordChange: (v: string) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+}) {
   return (
-    <motion.div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <motion.div
-        className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full"
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-      >
-        <button
-          onClick={onClose}
-          className="float-right text-gray-400 hover:text-white"
-        >
-          <X className="w-5 h-5" />
-        </button>
-        <div className="clear-both">{children}</div>
-      </motion.div>
-    </motion.div>
+    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal" style={{ maxWidth: 400 }}>
+        <button className="modal-close" onClick={onClose} aria-label="Cerrar">✕</button>
+        <span className="eyebrow">Admin</span>
+        <h2 style={{ marginTop: 12 }}>Autorización</h2>
+        <form onSubmit={onSubmit}>
+          <div className="field" style={{ marginTop: 24 }}>
+            <label>Contraseña de administrador</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => onPasswordChange(e.target.value)}
+              autoFocus
+            />
+          </div>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            style={{ width: '100%', marginTop: 8, justifyContent: 'center' }}
+          >
+            Autorizar <span className="arr">→</span>
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }

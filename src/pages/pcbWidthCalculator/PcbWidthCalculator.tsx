@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 
 type Unit = "mil" | "mm";
 type LayerType = "external" | "internal";
@@ -6,7 +7,7 @@ type LayerType = "external" | "internal";
 export default function PcbWidthCalculator() {
   const [current, setCurrent] = useState<number>(2);
   const [tempRise, setTempRise] = useState<number>(10);
-  const [thickness, setThickness] = useState<number>(1); // oz
+  const [thickness, setThickness] = useState<number>(1);
   const [unit, setUnit] = useState<Unit>("mil");
   const [layerType, setLayerType] = useState<LayerType>("external");
 
@@ -18,15 +19,9 @@ export default function PcbWidthCalculator() {
 
   const result = useMemo(() => {
     const { k, b, c } = constants[layerType];
-
-    const widthMil =
-      current /
-      (k * Math.pow(tempRise, b) * Math.pow(thickness, c));
-
+    const widthMil = current / (k * Math.pow(tempRise, b) * Math.pow(thickness, c));
     const widthMm = widthMil * 0.0254;
-
-    const areaMil2 = widthMil * (thickness * 1.378); // 1oz ≈ 1.378 mil thickness
-
+    const areaMil2 = widthMil * (thickness * 1.378);
     return {
       widthMil: parseFloat(widthMil.toFixed(3)),
       widthMm: parseFloat(widthMm.toFixed(3)),
@@ -35,132 +30,126 @@ export default function PcbWidthCalculator() {
   }, [current, tempRise, thickness, layerType]);
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
-      <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-8 space-y-6">
+    <section className="block">
+      <div className="wrap">
 
-        <div>
-          <h1 className="text-2xl font-semibold text-white">
-            Calculadora de Ancho de Traza PCB
-          </h1>
-          <p className="text-sm text-slate-400">
-            Basado en estándar IPC-2221
-          </p>
-        </div>
-
-        {/* Inputs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-          <InputField
-            label="Corriente (A)"
-            value={current}
-            setValue={setCurrent}
-            step={0.1}
-          />
-
-          <InputField
-            label="Aumento de Temperatura (°C)"
-            value={tempRise}
-            setValue={setTempRise}
-            step={1}
-          />
-
-          <InputField
-            label="Espesor de Cobre (oz)"
-            value={thickness}
-            setValue={setThickness}
-            step={0.1}
-          />
-
-          <div>
-            <label className="text-sm text-slate-400 block mb-1">
-              Tipo de Capa
-            </label>
-            <select
-              value={layerType}
-              onChange={(e) =>
-                setLayerType(e.target.value as LayerType)
-              }
-              className="w-full bg-slate-800 border border-amber-500/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-            >
-              <option value="external">Capa Externa</option>
-              <option value="internal">Capa Interna</option>
-            </select>
+        <div className="page-header">
+          <nav className="breadcrumb">
+            <Link to="/">Inicio</Link>
+            <span className="sep">/</span>
+            <Link to="/tools">Herramientas</Link>
+            <span className="sep">/</span>
+            <span>PCB Calculator</span>
+          </nav>
+          <span className="eyebrow">Diseño de hardware</span>
+          <div className="sec-head">
+            <h2>Calculadora de Ancho de Traza PCB</h2>
+            <p>Basado en estándar IPC-2221 para diseño de circuitos impresos.</p>
           </div>
         </div>
 
-        {/* Unit Switch */}
-        <div className="flex gap-3">
-          <button
-            onClick={() => setUnit("mil")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-              unit === "mil"
-                ? "bg-amber-600 text-white"
-                : "bg-slate-800 text-slate-400 hover:bg-amber-500"
-            }`}
-          >
-            mil
-          </button>
+        <div className="tool-layout reveal">
 
-          <button
-            onClick={() => setUnit("mm")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-              unit === "mm"
-                ? "bg-amber-600 text-white"
-                : "bg-slate-800 text-slate-400 hover:bg-amber-500"
-            }`}
-          >
-            mm
-          </button>
-        </div>
+          {/* ── Inputs ── */}
+          <div className="tool-inputs">
+            <div className="field">
+              <label>Corriente (A)</label>
+              <input
+                type="number"
+                value={current}
+                step={0.1}
+                min={0}
+                onChange={(e) => setCurrent(parseFloat(e.target.value) || 0)}
+              />
+            </div>
+            <div className="field">
+              <label>Aumento de temperatura (°C)</label>
+              <input
+                type="number"
+                value={tempRise}
+                step={1}
+                min={1}
+                onChange={(e) => setTempRise(parseFloat(e.target.value) || 1)}
+              />
+              <span className="hint">ΔT por encima de la temperatura ambiente</span>
+            </div>
+            <div className="field">
+              <label>Espesor de cobre (oz)</label>
+              <input
+                type="number"
+                value={thickness}
+                step={0.5}
+                min={0.5}
+                onChange={(e) => setThickness(parseFloat(e.target.value) || 0.5)}
+              />
+              <span className="hint">1 oz ≈ 35 µm · Estándar = 1 oz</span>
+            </div>
+            <div className="field">
+              <label>Tipo de capa</label>
+              <select
+                value={layerType}
+                onChange={(e) => setLayerType(e.target.value as LayerType)}
+              >
+                <option value="external">Capa externa</option>
+                <option value="internal">Capa interna</option>
+              </select>
+            </div>
 
-        {/* Result Card */}
-        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-6 space-y-3">
-          <h2 className="text-lg font-semibold text-white">
-            Ancho de Traza Requerido
-          </h2>
+            <div className="unit-switch">
+              <button
+                className={`unit-btn${unit === 'mil' ? ' active' : ''}`}
+                onClick={() => setUnit('mil')}
+                type="button"
+              >
+                mil
+              </button>
+              <button
+                className={`unit-btn${unit === 'mm' ? ' active' : ''}`}
+                onClick={() => setUnit('mm')}
+                type="button"
+              >
+                mm
+              </button>
+            </div>
 
-          <div className="text-3xl font-bold text-amber-400">
-            {unit === "mil"
-              ? `${result.widthMil} mil`
-              : `${result.widthMm} mm`}
+            <div className="tool-formula">
+              <p>W = I / (k × ΔT^b × t^c)</p>
+              <p>k = {constants[layerType].k} ({layerType === 'external' ? 'capa externa' : 'capa interna'})</p>
+              <p>b = {constants[layerType].b}, c = {constants[layerType].c}</p>
+            </div>
           </div>
 
-          <div className="text-sm text-slate-400">
-            Área transversal: {result.areaMil2} mil²
+          {/* ── Results ── */}
+          <div className="result-panel">
+            <span className="eyebrow">Ancho de traza requerido</span>
+            <div className="result-number">
+              {unit === 'mil' ? result.widthMil : result.widthMm}
+              <small>{unit}</small>
+            </div>
+            <p className="result-meta">
+              {current} A · ΔT {tempRise} °C · {thickness} oz · {layerType === 'external' ? 'externa' : 'interna'}
+            </p>
+
+            <div className="result-row">
+              <span className="result-label">Ancho en mil</span>
+              <span className="result-value">{result.widthMil} mil</span>
+            </div>
+            <div className="result-row">
+              <span className="result-label">Ancho en mm</span>
+              <span className="result-value">{result.widthMm} mm</span>
+            </div>
+            <div className="result-row">
+              <span className="result-label">Área transversal</span>
+              <span className="result-value">{result.areaMil2} mil²</span>
+            </div>
+            <div className="result-row">
+              <span className="result-label">Corriente</span>
+              <span className="result-value">{current} A</span>
+            </div>
           </div>
 
-          <div className="text-xs text-slate-500">
-            Corriente: {current}A • ΔT: {tempRise}°C • Espesor: {thickness}oz • {layerType}
-          </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-function InputField({
-  label,
-  value,
-  setValue,
-  step,
-}: {
-  label: string;
-  value: number;
-  setValue: (val: number) => void;
-  step: number;
-}) {
-  return (
-    <div>
-      <label className="text-sm text-slate-400 block mb-1">
-        {label}
-      </label>
-      <input
-        type="number"
-        value={value}
-        onChange={(e) => setValue(parseFloat(e.target.value) || 0)}
-        step={step}
-        className="w-full bg-slate-800 border border-amber-500/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-      />
-    </div>
+    </section>
   );
 }
