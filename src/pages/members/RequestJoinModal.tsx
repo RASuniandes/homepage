@@ -1,7 +1,66 @@
-import axios from "axios";
 import { useState } from "react";
-import { API_URL } from "../../utils/config";
+import { submitJoinRequest } from "../../utils/APIs/membersApi";
 import { toast } from "react-toastify";
+
+type ListFieldKey = "skills" | "contributions" | "goals";
+
+interface ListFieldProps {
+  field: ListFieldKey;
+  label: string;
+  placeholder: string;
+  items: string[];
+  inputValue: string;
+  disabled: boolean;
+  onInputChange: (field: ListFieldKey, value: string) => void;
+  onAdd: (field: ListFieldKey, values: string[]) => void;
+  onRemove: (field: ListFieldKey, index: number) => void;
+}
+
+function ListField({ field, label, placeholder, items, inputValue, disabled, onInputChange, onAdd, onRemove }: ListFieldProps) {
+  const commit = (raw: string) => {
+    const values = raw.split(',').map(v => v.trim()).filter(Boolean);
+    if (values.length) onAdd(field, values);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commit(inputValue);
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pasted = e.clipboardData.getData('text');
+    if (pasted.includes(',')) {
+      e.preventDefault();
+      commit(inputValue + pasted);
+      onInputChange(field, '');
+    }
+  };
+
+  return (
+    <div className="field">
+      <label>{label} <span style={{ fontWeight: 400, opacity: .6 }}>(Enter o comas)</span></label>
+      <div className="field-tags">
+        {items.map((item, idx) => (
+          <span key={idx} className="field-tag">
+            {item}
+            <button type="button" onClick={() => onRemove(field, idx)} aria-label={`Eliminar ${item}`}>×</button>
+          </span>
+        ))}
+      </div>
+      <input
+        type="text"
+        placeholder={placeholder}
+        value={inputValue}
+        onChange={(e) => onInputChange(field, e.target.value)}
+        onKeyDown={handleKeyDown}
+        onPaste={handlePaste}
+        disabled={disabled}
+      />
+    </div>
+  );
+}
 
 interface RequestJoinModalProps {
   onClose: () => void;
@@ -25,7 +84,11 @@ export default function RequestJoinModal({ onClose, onSuccess }: RequestJoinModa
   });
   const [loading, setLoading] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string>("");
-  const [currentInput, setCurrentInput] = useState({ skills: "", contributions: "", goals: "" });
+  const [currentInput, setCurrentInput] = useState<Record<ListFieldKey, string>>({
+    skills: "",
+    contributions: "",
+    goals: "",
+  });
 
   const validateEmail = (email: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -44,24 +107,20 @@ export default function RequestJoinModal({ onClose, onSuccess }: RequestJoinModa
     }
   };
 
-  const handleListInputChange = (field: "skills" | "contributions" | "goals", value: string) => {
+  const handleListInputChange = (field: ListFieldKey, value: string) => {
     setCurrentInput(prev => ({ ...prev, [field]: value }));
   };
 
-  const addToList = (field: "skills" | "contributions" | "goals") => {
-    const value = currentInput[field].trim();
-    if (value) {
-      setFormData(prev => ({ ...prev, [field]: [...prev[field], value] }));
-      setCurrentInput(prev => ({ ...prev, [field]: "" }));
-    }
+  const addToList = (field: ListFieldKey, values: string[]) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: [...prev[field], ...values.filter(v => !prev[field].includes(v))],
+    }));
+    setCurrentInput(prev => ({ ...prev, [field]: "" }));
   };
 
-  const removeFromList = (field: "skills" | "contributions" | "goals", index: number) => {
+  const removeFromList = (field: ListFieldKey, index: number) => {
     setFormData(prev => ({ ...prev, [field]: prev[field].filter((_, i) => i !== index) }));
-  };
-
-  const handleListKeyPress = (field: "skills" | "contributions" | "goals", e: React.KeyboardEvent) => {
-    if (e.key === "Enter") { e.preventDefault(); addToList(field); }
   };
 
   const handleJoinRequest = async (e: React.FormEvent) => {
@@ -74,22 +133,22 @@ export default function RequestJoinModal({ onClose, onSuccess }: RequestJoinModa
 
     try {
       setLoading(true);
-      const submitData = new FormData();
-      submitData.append("name", formData.name);
-      submitData.append("email", formData.email);
-      submitData.append("major", formData.major);
-      submitData.append("doubleMajor", formData.doubleMajor);
-      submitData.append("phoneNumber", formData.phoneNumber);
-      submitData.append("role", formData.role);
-      submitData.append("uCode", formData.uCode);
-      submitData.append("project", formData.project);
-      submitData.append("skills", JSON.stringify(formData.skills));
-      submitData.append("contributions", JSON.stringify(formData.contributions));
-      submitData.append("goals", JSON.stringify(formData.goals));
-      if (formData.photo) submitData.append("photo", formData.photo);
-      await axios.post(`${API_URL}/members/request-join`, submitData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
+      await submitJoinRequest(
+        {
+          name: formData.name,
+          email: formData.email,
+          major: formData.major,
+          doubleMajor: formData.doubleMajor,
+          phoneNumber: formData.phoneNumber,
+          role: formData.role,
+          uCode: formData.uCode,
+          project: formData.project,
+          skills: formData.skills,
+          contributions: formData.contributions,
+          goals: formData.goals,
+        },
+        formData.photo
+      );
       setFormData({ name: "", email: "", major: "", doubleMajor: "", phoneNumber: "", role: "", uCode: "", project: "", photo: null, skills: [], contributions: [], goals: [] });
       setPhotoPreview("");
       onSuccess?.();
@@ -100,28 +159,6 @@ export default function RequestJoinModal({ onClose, onSuccess }: RequestJoinModa
       setLoading(false);
     }
   };
-
-  const ListField = ({ field, label, placeholder }: { field: "skills" | "contributions" | "goals"; label: string; placeholder: string }) => (
-    <div className="field">
-      <label>{label} <span style={{ fontWeight: 400, opacity: .6 }}>(presiona Enter)</span></label>
-      <div className="field-tags">
-        {formData[field].map((item, idx) => (
-          <span key={idx} className="field-tag">
-            {item}
-            <button type="button" onClick={() => removeFromList(field, idx)} aria-label={`Eliminar ${item}`}>×</button>
-          </span>
-        ))}
-      </div>
-      <input
-        type="text"
-        placeholder={placeholder}
-        value={currentInput[field]}
-        onChange={(e) => handleListInputChange(field, e.target.value)}
-        onKeyDown={(e) => handleListKeyPress(field, e)}
-        disabled={loading}
-      />
-    </div>
-  );
 
   return (
     <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -171,9 +208,39 @@ export default function RequestJoinModal({ onClose, onSuccess }: RequestJoinModa
             <input type="text" name="project" value={formData.project} onChange={handleChange} disabled={loading} />
           </div>
 
-          <ListField field="skills" label="Habilidades" placeholder="Ej: ROS, C++, KiCad" />
-          <ListField field="contributions" label="Contribuciones" placeholder="Ej: Documentación, Testing" />
-          <ListField field="goals" label="Objetivos" placeholder="Ej: Investigación, Networking" />
+          <ListField
+            field="skills"
+            label="Habilidades"
+            placeholder="Ej: ROS, C++, KiCad"
+            items={formData.skills}
+            inputValue={currentInput.skills}
+            disabled={loading}
+            onInputChange={handleListInputChange}
+            onAdd={addToList}
+            onRemove={removeFromList}
+          />
+          <ListField
+            field="contributions"
+            label="Contribuciones"
+            placeholder="Ej: Documentación, Testing"
+            items={formData.contributions}
+            inputValue={currentInput.contributions}
+            disabled={loading}
+            onInputChange={handleListInputChange}
+            onAdd={addToList}
+            onRemove={removeFromList}
+          />
+          <ListField
+            field="goals"
+            label="Objetivos"
+            placeholder="Ej: Investigación, Networking"
+            items={formData.goals}
+            inputValue={currentInput.goals}
+            disabled={loading}
+            onInputChange={handleListInputChange}
+            onAdd={addToList}
+            onRemove={removeFromList}
+          />
 
           <p className="modal-section-label">Foto de perfil</p>
 

@@ -1,5 +1,4 @@
 import type { MemberCardProps } from "./memberType";
-import { API_URL } from "../../utils/config";
 
 const COUNCIL_ROLES = new Set([
   "Presidente", "Vicepresidente", "Secretario", "Tesorero",
@@ -8,9 +7,7 @@ const COUNCIL_ROLES = new Set([
 
 export default function MemberCard({ member, isAdmin, onApproved }: MemberCardProps) {
   const isCouncil = member.isInCouncil || (member.role ? COUNCIL_ROLES.has(member.role) : false);
-  const photoSrc = member.photo
-    ? (member.photo.startsWith("http") ? member.photo : `${API_URL}/${member.photo}`)
-    : null;
+  const photoSrc = member.photo ?? null;
 
   return (
     <article className="member-card reveal">

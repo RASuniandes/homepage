@@ -1,16 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { API_URL } from '../../utils/config';
+import { supabase } from '../../utils/supabase';
+import { getActiveMembers, getPendingMembers, approveMember } from '../../utils/APIs/membersApi';
 import type { Member } from './memberType';
 import MemberCard from './MemberCard';
 import RequestJoinModal from './RequestJoinModal';
-import { snakeToCamelObject } from '../../utils/snakeToCamel';
 import { toast } from 'react-toastify';
-
-const AUTH_TOKEN_KEY = 'admin_auth_token';
-const AUTH_EXPIRY_KEY = 'admin_auth_expiry';
 
 const AREA_FILTERS = [
   { id: 'all', label: 'Todos' },
@@ -27,6 +23,7 @@ export default function MembersPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [membersToAdd, setMembersToAdd] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
+  const [adminEmail, setAdminEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
@@ -35,30 +32,20 @@ export default function MembersPage() {
   const [activeFilter, setActiveFilter] = useState<FilterId>('all');
 
   useEffect(() => {
-    checkAuthStatus();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
     fetchMembers();
+    return () => subscription.unsubscribe();
   }, []);
-
-  const checkAuthStatus = () => {
-    const token = localStorage.getItem(AUTH_TOKEN_KEY);
-    const expiry = localStorage.getItem(AUTH_EXPIRY_KEY);
-    if (token && expiry && new Date().getTime() < parseInt(expiry)) {
-      setIsAuthenticated(true);
-      if (activeTab === 'toAdd') fetchMembersToAdd();
-    } else {
-      localStorage.removeItem(AUTH_TOKEN_KEY);
-      localStorage.removeItem(AUTH_EXPIRY_KEY);
-      setIsAuthenticated(false);
-    }
-  };
 
   const fetchMembers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/members`);
-      if (response.status !== 200) throw new Error('Error al cargar miembros');
-      const data = response.data.map((m: Record<string, unknown>) => snakeToCamelObject(m));
-      setMembers(data);
+      setMembers(await getActiveMembers());
     } catch {
       toast.error('No se pudieron cargar los miembros');
     } finally {
@@ -69,10 +56,7 @@ export default function MembersPage() {
   const fetchMembersToAdd = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/members/to_add`);
-      if (response.status !== 200) throw new Error('Error al cargar solicitudes');
-      const data = response.data.map((m: Record<string, unknown>) => snakeToCamelObject(m));
-      setMembersToAdd(data);
+      setMembersToAdd(await getPendingMembers());
     } catch {
       toast.error('No se pudieron cargar los miembros');
     } finally {
@@ -83,27 +67,25 @@ export default function MembersPage() {
   const handleAuthorize = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${API_URL}/members/authorize`, { password: adminPassword });
-      if (response.status !== 200) throw new Error('Contraseña incorrecta');
-      const expiryTime = new Date().getTime() + (2 * 60 * 60 * 1000);
-      localStorage.setItem(AUTH_TOKEN_KEY, 'authenticated');
-      localStorage.setItem(AUTH_EXPIRY_KEY, expiryTime.toString());
-      setIsAuthenticated(true);
-      toast.success('Acceso autorizado por 2 horas.');
+      const { error } = await supabase.auth.signInWithPassword({
+        email: adminEmail,
+        password: adminPassword,
+      });
+      if (error) throw error;
+      toast.success('Acceso autorizado.');
+      setAdminEmail('');
       setAdminPassword('');
       setShowPasswordModal(false);
       setActiveTab('toAdd');
       fetchMembersToAdd();
     } catch {
-      toast.error('Error al autorizar: Contraseña incorrecta');
-      setShowPasswordModal(false);
+      toast.error('Error al autorizar: Credenciales incorrectas');
     }
   };
 
-  const approveRequest = async (memberId: string) => {
+  const handleApprove = async (memberId: string) => {
     try {
-      const response = await axios.post(`${API_URL}/members/${memberId}/approve`);
-      if (response.status !== 200) throw new Error('Error al aprobar solicitud');
+      await approveMember(memberId);
       toast.success('Solicitud aprobada');
       fetchMembers();
       fetchMembersToAdd();
@@ -112,15 +94,12 @@ export default function MembersPage() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-    localStorage.removeItem(AUTH_EXPIRY_KEY);
-    setIsAuthenticated(false);
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setActiveTab('existing');
     toast.info('Sesión cerrada');
   };
 
-  // Derived: apply area filter to the active tab's member list
   const displayedMembers = useMemo(() => {
     const base = activeTab === 'existing' ? members : membersToAdd;
     if (activeFilter === 'all') return base;
@@ -131,6 +110,18 @@ export default function MembersPage() {
       m.skills?.some(s => s.toLowerCase().includes(activeFilter))
     );
   }, [members, membersToAdd, activeTab, activeFilter]);
+
+  const gridRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    if (displayedMembers.length > 0) {
+      // One frame delay so children are painted before the transition starts
+      requestAnimationFrame(() => el.classList.add('in'));
+    } else {
+      el.classList.remove('in');
+    }
+  }, [displayedMembers]);
 
   return (
     <>
@@ -202,32 +193,37 @@ export default function MembersPage() {
           )}
 
           {/* Grid */}
-          {loading ? (
-            <div className="empty-state"><p>Cargando miembros…</p></div>
-          ) : displayedMembers.length === 0 ? (
+          {loading && <div className="empty-state"><p>Cargando miembros…</p></div>}
+          {!loading && displayedMembers.length === 0 && (
             <div className="empty-state">
               <p>{activeTab === 'toAdd' ? 'No hay solicitudes pendientes.' : 'No hay miembros en esta categoría.'}</p>
             </div>
-          ) : (
-            <div className="members-grid stagger">
-              {displayedMembers.map(member => (
-                <MemberCard
-                  key={member.id}
-                  member={member}
-                  isAdmin={isAuthenticated && activeTab === 'toAdd'}
-                  onApproved={() => approveRequest(member.id)}
-                />
-              ))}
-            </div>
           )}
+          {/* Always mounted so the ref is stable; hidden via style when not in use */}
+          <div
+            ref={gridRef}
+            className="members-grid stagger"
+            style={loading || displayedMembers.length === 0 ? { display: 'none' } : undefined}
+          >
+            {displayedMembers.map(member => (
+              <MemberCard
+                key={member.id}
+                member={member}
+                isAdmin={isAuthenticated && activeTab === 'toAdd'}
+                onApproved={() => handleApprove(member.id)}
+              />
+            ))}
+          </div>
 
         </div>
       </section>
 
-      {/* Admin password modal */}
+      {/* Admin login modal */}
       {showPasswordModal && (
-        <AdminPasswordModal
+        <AdminLoginModal
+          email={adminEmail}
           password={adminPassword}
+          onEmailChange={setAdminEmail}
           onPasswordChange={setAdminPassword}
           onSubmit={handleAuthorize}
           onClose={() => setShowPasswordModal(false)}
@@ -242,13 +238,17 @@ export default function MembersPage() {
   );
 }
 
-function AdminPasswordModal({
+function AdminLoginModal({
+  email,
   password,
+  onEmailChange,
   onPasswordChange,
   onSubmit,
   onClose,
 }: {
+  email: string;
   password: string;
+  onEmailChange: (v: string) => void;
   onPasswordChange: (v: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
@@ -261,12 +261,20 @@ function AdminPasswordModal({
         <h2 style={{ marginTop: 12 }}>Autorización</h2>
         <form onSubmit={onSubmit}>
           <div className="field" style={{ marginTop: 24 }}>
-            <label>Contraseña de administrador</label>
+            <label>Correo electrónico</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => onEmailChange(e.target.value)}
+              autoFocus
+            />
+          </div>
+          <div className="field">
+            <label>Contraseña</label>
             <input
               type="password"
               value={password}
               onChange={(e) => onPasswordChange(e.target.value)}
-              autoFocus
             />
           </div>
           <button
