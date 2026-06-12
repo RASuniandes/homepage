@@ -1,0 +1,154 @@
+{
+  "slug": "avances-2026-1",
+  "title": "Avances técnicos — SWARM MK1.5 → MK2",
+  "subtitle": "Bitácora del equipo: electrónica, navegación y divulgación",
+  "eyebrow": "Registro técnico",
+  "period": "Marzo – Junio 2026",
+  "start": "2026-03-30",
+  "end": "2026-06-09",
+  "events": [
+    {
+      "date": "2026-03-30",
+      "dateLabel": "30 marzo 2026",
+      "title": "Caracterización y adquisición batería 3s3p",
+      "description": [
+        "Se ensambló un set de baterías, aprovechando 9 baterías de 2600mAh en configuración 3s3p, para un total de 11.1V, 7800mAh."
+      ],
+      "images": [
+        "image2.png"
+      ]
+    },
+    {
+      "date": "2026-04-20",
+      "dateLabel": "20 de abril de 2026",
+      "title": "Soldadura de punta batería 6S",
+      "description": [
+        "Se usarón baterías 18650 eve de 2550mAh, 3.6V, 7.5A de máxima descarga. Se recomienda cargar a 1C o 0.5C."
+      ],
+      "images": [
+        "image8.png"
+      ]
+    },
+    {
+      "date": "2026-04-24",
+      "dateLabel": "24 de abril de 2026",
+      "title": "PCBs distribución potencia",
+      "description": [
+        "Realmente, no presenta ninguna etapa de switching o conmutación dentro de las PCB, solo presentan un acople idoneo desde la batería a los convertidores comerciales a usar y desde la salida de los convertidores a los conectores de salida para los dispositivos de SWARM MK 1.5; maximizándose la modularidad y flexibilidad en caso de que se necesite implementar un modulo de conversión comercial diferente, o implementar el propio a modo de prueba para la formación de una PCB monolítica final.",
+        "Se reduce rudio con capacitancias de desacople. Se colocarón capacitancias grandes que funcionen de tanque de energía ante picos de consumo. Se implementarón fusibles reseteables de diferentes corrientes de corte con leds indicadores. Se implementan circuito integrado INA 219 que permite hacer monitoreo de la corriente y el voltaje para hacer fuel gauge e integrado PD source TPS25741 configurado a 5V 5A para usar la raspberry pi 5."
+      ],
+      "images": [
+        "image11.png"
+      ]
+    },
+    {
+      "date": "2026-04-28",
+      "dateLabel": "28 de abril de 2026",
+      "title": "Restauración sistema de potencia old",
+      "description": [
+        "Se ajusto voltaje de salida convertidores. Voltaje de sobredescarga. Se soldó cable para conectar nueva batería a PCB de potencia MK1."
+      ],
+      "images": [
+        "image6.png"
+      ]
+    },
+    {
+      "date": "2026-04-30",
+      "dateLabel": "30 de abril 2026",
+      "title": "Inicio de simulación SLAM",
+      "description": [
+        "Se inició con una prueba básica para simular entornos virtuales para aprender a realizar SLAM.",
+        "Se comenzó el trasplante del robot a un modelo URDF virtual para comenzar a experimentar con su geometría virtualmente"
+      ],
+      "images": [
+        "image4.png"
+      ]
+    },
+    {
+      "date": "2026-05-04",
+      "dateLabel": "4 mayo 2026",
+      "title": "Logística de materiales electrónicos",
+      "description": [
+        "Se consolidó la lista de componentes nacionales e internacionales necesarios para las tareas de electrónica en MK 1.5 e, idealmente, MK 2 y se implementó el uso de casillero virtual para reducir el costo de envío."
+      ],
+      "images": [
+        "image3.png"
+      ]
+    },
+    {
+      "date": "2026-05-04",
+      "dateLabel": "4 de mayo 2026",
+      "title": "Robot SPARK",
+      "description": [
+        "Participación en la feria de introducción de robot SPARK a colegios en actividades/talleres de integración y aprendizaje."
+      ],
+      "images": [
+        "image7.png"
+      ]
+    },
+    {
+      "date": "2026-05-07",
+      "dateLabel": "7 de mayo 2026",
+      "title": "Encoders",
+      "description": [
+        "Se finalizó y se probó el código de la ESP32 de los encoders para integrarlos directamente con ROS2, permitiendo próximamente realizar tanto SLAM como corrección por odometría"
+      ],
+      "images": [
+        "image13.png"
+      ]
+    },
+    {
+      "date": "2026-05-11",
+      "dateLabel": "11 mayo 2026",
+      "title": "Diseño e impresión PCBs Drivers",
+      "description": [
+        "Se realiza el rediseño de la pcb de control de drivers mediante la integración de la lectura de encoders a partir de su caracterización.",
+        "Se realiza el diseño en KiCad y su respectiva impresión. A partir de ello, se procede con la implementación, prueba e integración con el sistema de SWARM a partir de los componentes adquiridos."
+      ],
+      "images": [
+        "image5.png",
+        "image1.png"
+      ]
+    },
+    {
+      "date": "2026-05-23",
+      "dateLabel": "23 de mayo 2026",
+      "title": "Family Fest 2026",
+      "description": [
+        "Participación como ayudante en en el Family Fest 2026, mostrando a interesados sobre todo lo que se hace en la carrera, enfocado en el área de la robótica."
+      ],
+      "images": [
+        "image10.png"
+      ]
+    },
+    {
+      "date": "2026-06-03",
+      "dateLabel": "3 de junio 2026",
+      "title": "Robot SPARK - de protoboard a PCB",
+      "description": [
+        "Colaboración como instructor en taller de enseñanza básico de diseño de circuitos impresos en PCB en KiCAD a estudiantes de colegio interesados."
+      ],
+      "images": [
+        "image9.png"
+      ]
+    },
+    {
+      "date": "2026-06-09",
+      "dateLabel": "9 de junio 2026",
+      "title": "Robot SPARK - Diseño y modelado 3D",
+      "description": [
+        "Colaborador como instructor en taller de modelado básico en 3D hacia estudiantes de colegio."
+      ],
+      "images": [
+        "image12.png"
+      ]
+    }
+  ],
+  "contributors": [
+    "Daniel Alejandro Castillo González",
+    "Manuel Santiago Suaza Quiroga",
+    "Andrés Ayala Mansilla",
+    "Daniel Andrés Munevar",
+    "Johan Sebastian Castiblanco"
+  ]
+}
