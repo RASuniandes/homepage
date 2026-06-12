@@ -8,6 +8,7 @@ import LipoEstimator from "./pages/batteryEstimator/BatteryEstimator";
 import MembersPage from "./pages/members/members";
 import ToolsHub from "./pages/tools/ToolsHub";
 import SwarmProject from "./pages/swarm/SwarmProject";
+import RobotSpark from "./pages/robotSpark/RobotSpark";
 import HistoricIndex from "./pages/historic/HistoricIndex";
 import BitacoraTimeline from "./pages/historic/BitacoraTimeline";
 import { ToastContainer } from "react-toastify";
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="/tools/pcb-calculator" element={<PcbWidthCalculator />} />
           <Route path="/tools/lipo-estimator" element={<LipoEstimator />} />
           <Route path="/swarm-project" element={<SwarmProject />} />
+          <Route path="/robot-spark" element={<RobotSpark />} />
           <Route path="/bitacora" element={<HistoricIndex />} />
           <Route path="/bitacora/:slug" element={<BitacoraTimeline />} />
         </Route>

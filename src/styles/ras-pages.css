@@ -1002,6 +1002,287 @@
 }
 
 /* =====================================================
+   ROBOT SPARK PAGE
+   ===================================================== */
+
+/* ─── Hero ─── */
+.ras-ds .rs-hero {
+  position: relative;
+  height: 86vh;
+  min-height: 580px;
+  max-height: 900px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.ras-ds .rs-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+  pointer-events: none;
+}
+.ras-ds .rs-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    170deg,
+    rgba(0,0,0,.3) 0%,
+    rgba(0,0,0,.08) 30%,
+    rgba(0,0,0,.65) 65%,
+    rgba(0,0,0,.92) 100%
+  );
+}
+.ras-ds .rs-hero-content {
+  position: relative;
+  z-index: 2;
+  padding-bottom: 60px;
+}
+.ras-ds .rs-hero-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.52);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+.ras-ds .rs-hero-eyebrow::before {
+  content: '';
+  width: 22px;
+  height: 2px;
+  background: rgba(255,255,255,.52);
+  flex-shrink: 0;
+}
+.ras-ds .rs-hero-title {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 900;
+  font-size: clamp(64px, 11vw, 130px);
+  letter-spacing: -.045em;
+  line-height: .9;
+  color: #ffffff;
+  margin: 0 0 24px;
+}
+.ras-ds .rs-hero-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,.5);
+  font-style: italic;
+  letter-spacing: .01em;
+  margin: 0;
+  max-width: 46ch;
+}
+.ras-ds .rs-hero-scroll {
+  position: absolute;
+  bottom: 28px;
+  right: 32px;
+  z-index: 2;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.36);
+  writing-mode: vertical-rl;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ras-ds .rs-hero-scroll::before {
+  content: '';
+  width: 1px;
+  height: 44px;
+  background: rgba(255,255,255,.28);
+}
+
+/* ─── Session grid (2×2) ─── */
+.ras-ds .rs-session-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 48px;
+}
+.ras-ds .rs-session-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s;
+}
+.ras-ds .rs-session-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--line-strong);
+}
+.ras-ds .rs-session-img {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--surface-2);
+  position: relative;
+}
+.ras-ds .rs-session-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease;
+  display: block;
+}
+.ras-ds .rs-session-card:hover .rs-session-img img { transform: scale(1.04); }
+
+/* Code placeholder for session 4 */
+.ras-ds .rs-session-img--code {
+  background: #0d1117;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 28px 32px;
+}
+.ras-ds .rs-code-bg {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: clamp(11px, 1.1vw, 13.5px);
+  line-height: 2;
+  color: rgba(255,255,255,.28);
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+.ras-ds .rs-code-bg span { display: block; }
+.ras-ds .rs-code-bg .indent  { padding-left: 1.6em; color: rgba(255,255,255,.42); }
+.ras-ds .rs-code-bg .indent2 { padding-left: 3.2em; color: var(--accent); opacity: .8; }
+
+.ras-ds .rs-session-body {
+  padding: 26px 28px 28px;
+}
+.ras-ds .rs-session-num {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 900;
+  font-size: 42px;
+  letter-spacing: -.04em;
+  line-height: 1;
+  color: var(--accent);
+  opacity: .22;
+  margin-bottom: 10px;
+}
+.ras-ds .rs-session-body h3 {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: -.01em;
+  margin: 0 0 10px;
+  line-height: 1.2;
+}
+.ras-ds .rs-session-body p {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  line-height: 1.56;
+  margin: 0 0 18px;
+}
+
+/* ─── Gallery ─── */
+.ras-ds .rs-gallery-band {
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.ras-ds .rs-gallery {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-rows: auto;
+  gap: 14px;
+  margin-top: 46px;
+}
+.ras-ds .rs-gallery-item {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  aspect-ratio: 4/3;
+}
+.ras-ds .rs-gallery-item--tall {
+  grid-row: span 1;
+  aspect-ratio: 3/4;
+}
+.ras-ds .rs-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .5s ease;
+}
+.ras-ds .rs-gallery-item:hover img { transform: scale(1.04); }
+
+/* ─── Impact band ─── */
+.ras-ds .rs-impact-band {
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+  position: relative;
+}
+.ras-ds .rs-impact-band::before {
+  content: "SPARK";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Archivo', sans-serif;
+  font-weight: 900;
+  font-size: clamp(80px, 16vw, 180px);
+  color: var(--accent);
+  opacity: .04;
+  letter-spacing: -.05em;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  line-height: 1;
+}
+.ras-ds .rs-impact-inner {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 20px 0;
+  position: relative;
+}
+.ras-ds .rs-impact-inner h2 {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 900;
+  font-size: clamp(36px, 5.5vw, 68px);
+  letter-spacing: -.04em;
+  line-height: 1;
+  margin: 18px 0 20px;
+}
+.ras-ds .rs-impact-inner > p {
+  font-size: 17px;
+  color: var(--ink-soft);
+  margin: 0 0 28px;
+  line-height: 1.6;
+}
+.ras-ds .rs-impact-tags {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ─── Robot Spark responsive ─── */
+@media (max-width: 860px) {
+  .ras-ds .rs-hero { height: 72vh; min-height: 480px; }
+  .ras-ds .rs-hero-title { font-size: clamp(52px, 12vw, 90px); }
+  .ras-ds .rs-session-grid { grid-template-columns: 1fr; }
+  .ras-ds .rs-gallery { grid-template-columns: 1fr 1fr; }
+  .ras-ds .rs-gallery-item--tall { aspect-ratio: 4/3; }
+}
+@media (max-width: 560px) {
+  .ras-ds .rs-hero { height: 60vh; min-height: 400px; }
+  .ras-ds .rs-hero-scroll { display: none; }
+  .ras-ds .rs-gallery { grid-template-columns: 1fr; }
+}
+
+/* =====================================================
    BITÁCORA — technical logbook index + timeline
    ===================================================== */
 
