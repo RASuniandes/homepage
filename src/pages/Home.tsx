@@ -48,7 +48,7 @@ export default function Home() {
 
           <nav className="links">
             <a href="#" onClick={scrollTo('nosotros')}>Nosotros</a>
-            <a href="#" onClick={scrollTo('proyecto')}>Proyecto</a>
+            <Link to="/swarm-project">Proyecto</Link>
             <a href="#" onClick={scrollTo('charlas')}>Charlas</a>
             <a href="#" onClick={scrollTo('spark')}>Robot Spark</a>
             <a href="#" onClick={scrollTo('aliados')}>Aliados</a>
@@ -90,9 +90,9 @@ export default function Home() {
                 <a href="#" className="btn btn-primary btn-lg" onClick={scrollTo('aliados')}>
                   Trabajemos juntos <span className="arr">→</span>
                 </a>
-                <a href="#" className="btn btn-ghost btn-lg" onClick={scrollTo('proyecto')}>
+                <Link to="/swarm-project" className="btn btn-ghost btn-lg">
                   Conoce el proyecto
-                </a>
+                </Link>
               </div>
               <div className="meta">
                 <div className="m"><b>+30</b><span>Miembros activos</span></div>
@@ -223,9 +223,9 @@ export default function Home() {
                   mostramos el estado actual de la robótica en Colombia.
                 </p>
               </div>
-              <a href="#" className="btn btn-ghost" style={{ marginTop: 8 }} onClick={scrollTo('aliados')}>
-                Colabora con el proyecto <span className="arr">→</span>
-              </a>
+              <Link to="/swarm-project" className="btn btn-ghost" style={{ marginTop: 8 }}>
+                Ver el proyecto completo <span className="arr">→</span>
+              </Link>
             </div>
           </div>
         </section>
@@ -350,6 +350,19 @@ export default function Home() {
 
       </main>
 
+      {/* ══════════════ HISTORIC LOG (low-key) ══════════════ */}
+      <div className="histlink-band">
+        <div className="wrap">
+          <Link to="/bitacora" className="histlink">
+            <span className="histlink-k">Registro histórico</span>
+            <span className="histlink-text">
+              Bitácora técnica — la memoria de avances del proyecto
+            </span>
+            <span className="histlink-arr">→</span>
+          </Link>
+        </div>
+      </div>
+
       {/* ══════════════ FOOTER ══════════════ */}
       <footer>
         <div className="wrap">
@@ -379,6 +392,7 @@ export default function Home() {
               <a href="#" onClick={scrollTo('aliados')}>Únete al equipo</a>
               <Link to="/members">Miembros</Link>
               <Link to="/tools">Herramientas</Link>
+              <Link to="/bitacora">Bitácora</Link>
             </div>
 
             <div className="foot-col">
