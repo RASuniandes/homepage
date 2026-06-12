@@ -16,6 +16,11 @@ export default function RASLayout() {
     localStorage.setItem('ras-theme', next);
   };
 
+  // Scroll to top on every route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [location.pathname]);
+
   // IntersectionObserver reveals — re-run on route changes
   useEffect(() => {
     const container = rootRef.current;
@@ -60,7 +65,7 @@ export default function RASLayout() {
             <Link to="/">Nosotros</Link>
             {navLink('/swarm-project', 'Proyecto')}
             <Link to="/">Charlas</Link>
-            <Link to="/">Robot Spark</Link>
+            {navLink('/robot-spark', 'Robot Spark')}
             {navLink('/members', 'Miembros')}
             {navLink('/tools', 'Herramientas')}
           </nav>
@@ -106,6 +111,7 @@ export default function RASLayout() {
               <h4>Navegación</h4>
               <Link to="/">Inicio</Link>
               <Link to="/swarm-project">Proyecto SWARM</Link>
+              <Link to="/robot-spark">Robot Spark</Link>
               <Link to="/members">Miembros</Link>
               <Link to="/tools">Herramientas</Link>
               <Link to="/bitacora">Bitácora</Link>

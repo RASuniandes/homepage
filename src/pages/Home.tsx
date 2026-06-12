@@ -295,6 +295,11 @@ export default function Home() {
                 <span className="partner"><span className="pd" />Fundación Ecopetrol</span>
                 <span className="partner"><span className="pd" />Laboratorio Crea · Uniandes</span>
               </div>
+              <div className="cta-row" style={{ marginTop: 28 }}>
+                <Link to="/robot-spark" className="btn btn-primary">
+                  Conoce el programa <span className="arr">→</span>
+                </Link>
+              </div>
             </div>
             <div className="media reveal">
               <div className="media-card" style={{ aspectRatio: '5/4' }}>
