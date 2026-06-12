@@ -58,7 +58,7 @@ export default function RASLayout() {
 
           <nav className="links">
             <Link to="/">Nosotros</Link>
-            <Link to="/">Proyecto</Link>
+            {navLink('/swarm-project', 'Proyecto')}
             <Link to="/">Charlas</Link>
             <Link to="/">Robot Spark</Link>
             {navLink('/members', 'Miembros')}
@@ -105,8 +105,10 @@ export default function RASLayout() {
             <div className="foot-col">
               <h4>Navegación</h4>
               <Link to="/">Inicio</Link>
+              <Link to="/swarm-project">Proyecto SWARM</Link>
               <Link to="/members">Miembros</Link>
               <Link to="/tools">Herramientas</Link>
+              <Link to="/bitacora">Bitácora</Link>
             </div>
 
             <div className="foot-col">
