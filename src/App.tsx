@@ -9,6 +9,8 @@ import MembersPage from "./pages/members/members";
 import ToolsHub from "./pages/tools/ToolsHub";
 import SwarmProject from "./pages/swarm/SwarmProject";
 import RobotSpark from "./pages/robotSpark/RobotSpark";
+import BertoCtf from "./pages/bertoCtf/BertoCtf";
+import BertoSolutions from "./pages/bertoCtf/BertoSolutions";
 import HistoricIndex from "./pages/historic/HistoricIndex";
 import BitacoraTimeline from "./pages/historic/BitacoraTimeline";
 import { ToastContainer } from "react-toastify";
@@ -22,6 +24,11 @@ export default function App() {
       <Routes>
         {/* Home — standalone editorial page, no layout wrapper */}
         <Route path="/" element={<Root />} />
+
+        {/* BERTO CTF — immersive standalone experience, its own dark theme */}
+        <Route path="/robot-spark/berto" element={<BertoCtf />} />
+        {/* Teacher-only solutions — obscure URL, intentionally unlinked */}
+        <Route path="/robot-spark/berto/protocolo-7c3f9a2e" element={<BertoSolutions />} />
 
         {/* Redesigned pages — new editorial nav + footer */}
         <Route element={<RASLayout />}>
