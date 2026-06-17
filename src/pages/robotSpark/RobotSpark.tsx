@@ -202,6 +202,11 @@ export default function RobotSpark() {
                   <span className="tag">Sensores</span>
                   <span className="tag">Competencia</span>
                 </div>
+                <div className="card-cta" style={{ marginTop: 18 }}>
+                  <Link to="/robot-spark/berto" className="btn btn-ghost">
+                    Jugar “Señal Perdida” <span className="arr">→</span>
+                  </Link>
+                </div>
               </div>
             </article>
 
