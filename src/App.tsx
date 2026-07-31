@@ -17,7 +17,8 @@ import { ToastContainer } from "react-toastify";
 import EventsPage from "./pages/events/events";
 import ControllerView from "./pages/controller/Controller";
 import LidarView from "./pages/lidarView/LidarView";
-
+import './styles/ras-pages.css'
+import './styles/ras-tokens.css'
 export default function App() {
   return (
     <HashRouter>

@@ -98,7 +98,7 @@ export default function RASLayout() {
     { kind: 'scroll', id: 'aliados', label: 'Aliados' },
     { kind: 'route', to: '/equipo', label: 'Equipo' },
     { kind: 'route', to: '/tools', label: 'Herramientas' },
-    { kind: 'route', to: '/robot-spark/berto/protocolo-7c3f9a2e', label: 'Mini Juego' },
+    { kind: 'route', to: '/robot-spark/berto', label: 'Mini Juego' },
   ];
   const linkBase =
     'relative text-[0.925rem] font-medium text-[#171310] transition-colors hover:text-[#7A1F2E] dark:text-[#F0EBE2] dark:hover:text-[#E3A6AD] ' +
