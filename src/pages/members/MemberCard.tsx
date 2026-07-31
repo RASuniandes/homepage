@@ -44,7 +44,7 @@ export default function MemberCard({ member, isAdmin, onApproved }: MemberCardPr
 
       {isAdmin && (
         <button className="approve-btn" onClick={() => onApproved?.(member.id)}>
-          Aprobar miembro <span style={{ marginLeft: 4 }}>→</span>
+          Aprobar integrante <span style={{ marginLeft: 4 }}>→</span>
         </button>
       )}
     </article>

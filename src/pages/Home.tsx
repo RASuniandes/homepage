@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { REPO_NAME } from '../utils/config';
 import './home.css';
+import Render3D from '../components/render3D';
 
 export default function Home() {
   // Scroll-reveal via IntersectionObserver
+  const navigate = useNavigate();
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => entries.forEach(e => {
@@ -29,49 +31,17 @@ export default function Home() {
 
   const scrollTo = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/');
+    }
   };
 
   return (
     <div id="ras-home" className="ras-ds">
 
-      {/* ══════════════ NAV ══════════════ */}
-      <header className="nav">
-        <div className="wrap nav-in">
-          <a className="brand" href="#" onClick={scrollTo('top')}>
-            <img src={`${REPO_NAME}/ras_logo_black.png`} alt="RAS Uniandes" />
-            <span className="wm">
-              RAS Uniandes
-              <small>IEEE Robotics &amp; Automation</small>
-            </span>
-          </a>
-
-          <nav className="links">
-            <a href="#" onClick={scrollTo('nosotros')}>Nosotros</a>
-            <Link to="/swarm-project">Proyecto</Link>
-            <a href="#" onClick={scrollTo('charlas')}>Charlas</a>
-            <a href="#" onClick={scrollTo('spark')}>Robot Spark</a>
-            <a href="#" onClick={scrollTo('aliados')}>Aliados</a>
-            <Link to="/members">Miembros</Link>
-            <Link to="/tools">Herramientas</Link>
-          </nav>
-
-          <div className="nav-right">
-            <button className="theme-btn" aria-label="Cambiar tema" onClick={handleThemeToggle}>
-              <svg className="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4" />
-              </svg>
-              <svg className="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-              </svg>
-            </button>
-            <a href="#" className="btn btn-primary" onClick={scrollTo('aliados')}>
-              Trabajemos juntos <span className="arr">→</span>
-            </a>
-          </div>
-        </div>
-      </header>
 
       <main id="top">
 
@@ -95,7 +65,7 @@ export default function Home() {
                 </Link>
               </div>
               <div className="meta">
-                <div className="m"><b>+30</b><span>Miembros activos</span></div>
+                <div className="m"><b>+30</b><span>Integrantes activos</span></div>
                 <div className="m"><b>1</b><span>Proyecto insignia</span></div>
                 <div className="m"><b>3</b><span>Áreas técnicas</span></div>
               </div>
@@ -104,10 +74,7 @@ export default function Home() {
             <div className="hero-media reveal">
               <div className="accentbar" />
               <div className="frame">
-                <img
-                  src={`${REPO_NAME}/team-banner.jpg`}
-                  alt="Equipo RAS Uniandes con la bandera del capítulo"
-                />
+                <Render3D />
               </div>
             </div>
           </div>
@@ -175,7 +142,7 @@ export default function Home() {
             <div className="statline">
               <div className="s">
                 <span className="val">30+</span>
-                <span className="lbl">Miembros activos</span>
+                <span className="lbl">Integrantes activos</span>
               </div>
               <div className="s">
                 <span className="val">3–7</span>
@@ -219,7 +186,7 @@ export default function Home() {
                   computadora, control y diseño mecánico.
                 </p>
                 <p>
-                  Es la plataforma donde nuestros miembros aplican lo aprendido y donde
+                  Es la plataforma donde nuestros integrantes aplican lo aprendido y donde
                   mostramos el estado actual de la robótica en Colombia.
                 </p>
               </div>
@@ -237,7 +204,7 @@ export default function Home() {
               <span className="eyebrow">Promoción de la educación abierta</span>
               <h2>Charlas técnicas, abiertas cada semestre</h2>
               <p>
-                Sesiones lideradas por miembros de nuestra iniciativa —speakers apasionados
+                Sesiones lideradas por integrantes de nuestra iniciativa —speakers apasionados
                 por su trabajo— que exploran tecnologías emergentes y herramientas de alta utilidad.
               </p>
             </div>
@@ -368,59 +335,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ══════════════ FOOTER ══════════════ */}
-      <footer>
-        <div className="wrap">
-          <div className="foot-grid">
-            <div className="foot-brand">
-              <img
-                src={`${REPO_NAME}/ras_logo.png`}
-                alt="RAS Uniandes — IEEE Robotics &amp; Automation Society · Universidad de los Andes"
-              />
-              <p>
-                Capítulo estudiantil de la IEEE Robotics &amp; Automation Society
-                en la Universidad de los Andes.
-              </p>
-            </div>
-
-            <div className="foot-col">
-              <h4>Navegación</h4>
-              <a href="#" onClick={scrollTo('nosotros')}>Nosotros</a>
-              <a href="#" onClick={scrollTo('proyecto')}>Proyecto insignia</a>
-              <a href="#" onClick={scrollTo('charlas')}>Charlas técnicas</a>
-              <a href="#" onClick={scrollTo('spark')}>Robot Spark</a>
-            </div>
-
-            <div className="foot-col">
-              <h4>Comunidad</h4>
-              <a href="#" onClick={scrollTo('aliados')}>Sé aliado</a>
-              <a href="#" onClick={scrollTo('aliados')}>Únete al equipo</a>
-              <Link to="/members">Miembros</Link>
-              <Link to="/tools">Herramientas</Link>
-              <Link to="/bitacora">Bitácora</Link>
-            </div>
-
-            <div className="foot-col">
-              <h4>Contacto</h4>
-              <a href="mailto:rasuniandes@uniandes.edu.co">rasuniandes@uniandes.edu.co</a>
-              <a href="https://www.instagram.com/ras_uniandes/" target="_blank" rel="noopener noreferrer">
-                Instagram
-              </a>
-              <a href="https://www.linkedin.com/company/rasuniandes" target="_blank" rel="noopener noreferrer">
-                LinkedIn
-              </a>
-              <a href="https://www.youtube.com/@RasUniandes" target="_blank" rel="noopener noreferrer">
-                YouTube
-              </a>
-            </div>
-          </div>
-
-          <div className="foot-bot">
-            <span>© 2025 RAS Uniandes · IEEE Student Branch</span>
-            <span>Bogotá · Colombia</span>
-          </div>
-        </div>
-      </footer>
 
     </div>
   );

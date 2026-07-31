@@ -29,9 +29,9 @@ const links: LinkType[] = [
   },
   {
     id: 3,
-    label: "Miembros",
+    label: "Equipo",
     icon: <Users className="w-5 h-5" />,
-    href: "/members",
+    href: "/equipo",
     // isUpcoming: true
   },
   {

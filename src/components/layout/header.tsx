@@ -1,153 +1,137 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Menu, User, LogOut, Settings, X } from "lucide-react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { Menu, X, Sun, Moon } from "lucide-react";
 import { REPO_NAME } from "../../utils/config";
 
 const Header = ({
   setNavbarOpen,
-  navbarOpen, 
+  navbarOpen,
 }: {
   setNavbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  navbarOpen: boolean
+  navbarOpen: boolean;
 }) => {
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
-  const notificationRef = useRef<HTMLDivElement | null>(null);
-  const profileRef = useRef<HTMLDivElement | null>(null);
+  const scrollTo = (id: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
-  const navigate = useNavigate();
-
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
-      if (
-        notificationRef.current &&
-        !notificationRef.current.contains(e.target as Node)
-      ) {
-        setIsNotificationsOpen(false);
-      }
-
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(e.target as Node)
-      ) {
-        setIsProfileOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const handleThemeToggle = () => {
+    setIsDarkMode(!isDarkMode);
+  };
 
   return (
-    <header className="fixed top-0 left-0 w-full h-16 flex items-center justify-between px-6 bg-slate-950 border-b border-slate-800 z-50">
-      
-      {/* Logo and Tagline */}
-      <div className="flex items-center gap-2">
-        <Link to="/" className="flex items-center gap-2">
-          <img src={`${REPO_NAME}/ras_logo_black.png`} alt="Logo" className="w-8 h-8" />
-        </Link>
-        <span className="hidden md:inline text-slate-400 text-sm font-light">
-          Advancing technology for humanity
-        </span>
-      </div>
-
-      {/* Right Side */}
-      <div className="flex items-center gap-4">
-
-        {/* Notifications */}
-        <div className="relative" ref={notificationRef}>
-          {/* <button
-            onClick={() => {
-              setIsProfileOpen(false);
-              setIsNotificationsOpen(!isNotificationsOpen);
-            }}
-            className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition"
-          >
-            <Bell className="w-5 h-5 text-slate-300" />
-          </button> */}
-
-          {isNotificationsOpen && (
-            <div className="absolute right-0 mt-3 w-72 bg-slate-900 border border-slate-800 rounded-xl shadow-xl">
-              <div className="p-4 border-b border-slate-800">
-                <h3 className="text-white font-semibold">Notifications</h3>
-              </div>
-              <div className="p-4 text-sm text-slate-400">
-                No new notifications
-              </div>
-              <div className="p-3 border-t border-slate-800">
-                <button
-                  onClick={() => navigate("/notifications")}
-                  className="w-full text-blue-400 hover:text-blue-300 text-sm font-medium"
-                >
-                  View all
-                </button>
-              </div>
+    <header className="fixed top-0 left-0 w-full z-50 bg-white dark:bg- border-b border-gray-200 dark:border-slate-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-3">
+            <img
+              src={`${REPO_NAME}/ras_logo_black.png`}
+              alt="RAS Uniandes"
+              className="w-8 h-8"
+            />
+            <div className="hidden md:block">
+              <p className="text-gray-900 dark:text-white font-semibold">
+                RAS Uniandes
+              </p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                IEEE Robotics &amp; Automation
+              </p>
             </div>
-          )}
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-8">
+            <a
+              href="#nosotros"
+              onClick={scrollTo("nosotros")}
+              className="text-gray-900 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium transition"
+            >
+              Nosotros
+            </a>
+            <Link
+              to="/swarm-project"
+              className="text-gray-900 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium transition"
+            >
+              Proyecto
+            </Link>
+            <a
+              href="#charlas"
+              onClick={scrollTo("charlas")}
+              className="text-gray-900 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium transition"
+            >
+              Charlas
+            </a>
+            <a
+              href="#spark"
+              onClick={scrollTo("spark")}
+              className="text-gray-900 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium transition"
+            >
+              Robot Spark
+            </a>
+            <a
+              href="#aliados"
+              onClick={scrollTo("aliados")}
+              className="text-gray-900 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium transition"
+            >
+              Aliados
+            </a>
+            <Link
+              to="/equipo"
+              className="text-gray-900 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium transition"
+            >
+              Equipo
+            </Link>
+            <Link
+              to="/tools"
+              className="text-gray-900 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium transition"
+            >
+              Herramientas
+            </Link>
+          </nav>
+
+          {/* Right Side */}
+          <div className="flex items-center gap-4">
+            {/* Theme Toggle */}
+            <button
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition"
+              aria-label="Cambiar tema"
+              onClick={handleThemeToggle}
+            >
+              {isDarkMode ? (
+                <Sun className="w-5 h-5 text-gray-900 dark:text-gray-300" />
+              ) : (
+                <Moon className="w-5 h-5 text-gray-900 dark:text-gray-300" />
+              )}
+            </button>
+
+            {/* CTA Button */}
+            <a
+              href="mailto:rasuniandes@uniandes.edu.co"
+              className="hidden md:inline-flex px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition gap-2"
+            >
+              Trabajemos juntos <span>→</span>
+            </a>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setNavbarOpen(!navbarOpen)}
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition"
+              aria-label="Toggle menu"
+            >
+              {navbarOpen ? (
+                <X className="w-5 h-5 text-gray-900 dark:text-gray-300" />
+              ) : (
+                <Menu className="w-5 h-5 text-gray-900 dark:text-gray-300" />
+              )}
+            </button>
+          </div>
         </div>
-
-        {/* Profile */}
-        <div className="relative" ref={profileRef}>
-          {/* <button
-            onClick={() => {
-              setIsNotificationsOpen(false);
-              setIsProfileOpen(!isProfileOpen);
-            }}
-            className="w-9 h-9 rounded-lg overflow-hidden bg-slate-800 flex items-center justify-center"
-          >
-            <User className="w-5 h-5 text-slate-300" />
-          </button> */}
-
-          {isProfileOpen && (
-            <div className="absolute right-0 mt-3 w-60 bg-slate-900 border border-slate-800 rounded-xl shadow-xl">
-              <div className="p-4 border-b border-slate-800">
-                <p className="text-white text-sm font-medium">John Doe</p>
-                <p className="text-slate-400 text-xs">john@email.com</p>
-              </div>
-
-              <div className="p-2">
-                <button
-                  onClick={() => navigate("/profile")}
-                  className="flex items-center gap-3 w-full px-3 py-2 text-sm text-slate-300 hover:bg-slate-800 rounded-lg transition"
-                >
-                  <User size={16} />
-                  Profile
-                </button>
-
-                <button
-                  onClick={() => navigate("/settings")}
-                  className="flex items-center gap-3 w-full px-3 py-2 text-sm text-slate-300 hover:bg-slate-800 rounded-lg transition"
-                >
-                  <Settings size={16} />
-                  Settings
-                </button>
-              </div>
-
-              <div className="p-2 border-t border-slate-800">
-                <button
-                  onClick={() => navigate("/login")}
-                  className="flex items-center gap-3 w-full px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition"
-                >
-                  <LogOut size={16} />
-                  Logout
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Mobile Menu */}
-        <button
-          onClick={() => setNavbarOpen(!navbarOpen)}
-          className="lg:hidden p-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition">
-          {navbarOpen ? (
-            <X className="w-5 h-5 text-slate-300" />
-          ) : (
-            <Menu className="w-5 h-5 text-slate-300" />
-          )}
-        </button>
       </div>
     </header>
   );

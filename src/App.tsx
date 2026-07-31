@@ -23,7 +23,6 @@ export default function App() {
     <HashRouter>
       <Routes>
         {/* Home — standalone editorial page, no layout wrapper */}
-        <Route path="/" element={<Root />} />
 
         {/* BERTO CTF — immersive standalone experience, its own dark theme */}
         <Route path="/robot-spark/berto" element={<BertoCtf />} />
@@ -31,8 +30,9 @@ export default function App() {
         <Route path="/robot-spark/berto/protocolo-7c3f9a2e" element={<BertoSolutions />} />
 
         {/* Redesigned pages — new editorial nav + footer */}
-        <Route element={<RASLayout />}>
-          <Route path="/members" element={<MembersPage />} />
+        <Route path= "/" element={<RASLayout />}>
+          <Route index element={<Root />} />
+          <Route path="/equipo" element={<MembersPage />} />
           <Route path="/tools" element={<ToolsHub />} />
           <Route path="/tools/pcb-calculator" element={<PcbWidthCalculator />} />
           <Route path="/tools/lipo-estimator" element={<LipoEstimator />} />
