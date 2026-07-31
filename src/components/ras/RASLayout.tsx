@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Sun, Moon, ArrowRight } from 'lucide-react';
-import { REPO_NAME } from '../../utils/config';
 
 /**
  * Design tokens (derived from the "El equipo" page):

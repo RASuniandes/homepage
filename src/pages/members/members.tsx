@@ -91,25 +91,6 @@ const getChipStyle = (active: boolean, customActiveBg?: string): React.CSSProper
   };
 };
 
-const getModalOverlayStyle = (): React.CSSProperties => ({
-  backgroundColor: isDarkMode() ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.5)',
-});
-
-const getModalCardStyle = (): React.CSSProperties => ({
-  borderColor: isDarkMode() ? '#374151' : '#E7E2D8',
-  backgroundColor: isDarkMode() ? '#0b1220' : '#FFFFFF',
-  color: isDarkMode() ? '#E5E7EB' : undefined,
-});
-
-const getInputFieldStyle = (): React.CSSProperties => ({
-  borderColor: isDarkMode() ? '#374151' : '#E7E2D8',
-  backgroundColor: isDarkMode() ? '#071029' : '#FFFFFF',
-  color: isDarkMode() ? '#E5E7EB' : '#171310',
-});
-
-const getBrandLabelStyle = (): React.CSSProperties => ({
-  color: isDarkMode() ? '#f97316' : styles.brandLabel.color,
-});
 
 export default function MembersPage() {
   const [members, setMembers] = useState<Member[]>([]);

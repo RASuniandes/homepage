@@ -22,12 +22,6 @@ export default function Home() {
     return () => io.disconnect();
   }, []);
 
-  const handleThemeToggle = () => {
-    const root = document.documentElement;
-    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-    localStorage.setItem('ras-theme', next);
-  };
 
   const scrollTo = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault();
