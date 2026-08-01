@@ -5,7 +5,7 @@ const COUNCIL_ROLES = new Set([
   "Electronic Lead", "Mechanical Lead", "Software Lead",
 ]);
 
-export default function MemberCard({ member, isAdmin, onApproved }: MemberCardProps) {
+export default function MemberCard({ member, isAdmin, onApproved, onRejected, onEdit }: MemberCardProps) {
   const isCouncil = member.isInCouncil || (member.role ? COUNCIL_ROLES.has(member.role) : false);
   const photoSrc = member.photo ?? null;
 
@@ -42,9 +42,20 @@ export default function MemberCard({ member, isAdmin, onApproved }: MemberCardPr
         {new Date(member.joinDate).toLocaleDateString('es-ES', { year: 'numeric', month: 'short' })}
       </p>
 
-      {isAdmin && (
-        <button className="approve-btn" onClick={() => onApproved?.(member.id)}>
-          Aprobar integrante <span style={{ marginLeft: 4 }}>→</span>
+      {isAdmin && onApproved && (
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="approve-btn" onClick={() => onApproved(member.id)}>
+            Aprobar <span style={{ marginLeft: 4 }}>→</span>
+          </button>
+          <button className="approve-btn reject-btn" onClick={() => onRejected?.(member.id)}>
+            Rechazar
+          </button>
+        </div>
+      )}
+
+      {isAdmin && onEdit && (
+        <button className="approve-btn" onClick={() => onEdit(member)}>
+          Editar
         </button>
       )}
     </article>

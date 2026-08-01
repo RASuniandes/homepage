@@ -2,10 +2,11 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../utils/supabase';
-import { getActiveMembers, getPendingMembers, approveMember } from '../../utils/APIs/membersApi';
+import { getActiveMembers, getPendingMembers, approveMember, rejectMember } from '../../utils/APIs/membersApi';
 import type { Member } from './memberType';
 import MemberCard from './MemberCard';
 import RequestJoinModal from './RequestJoinModal';
+import EditMemberModal from './EditMemberModal';
 import { toast } from 'react-toastify';
 
 const AREA_FILTERS = [
@@ -30,6 +31,7 @@ export default function MembersPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState<'existing' | 'toAdd'>('existing');
   const [activeFilter, setActiveFilter] = useState<FilterId>('all');
+  const [editingMember, setEditingMember] = useState<Member | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -91,6 +93,16 @@ export default function MembersPage() {
       fetchMembersToAdd();
     } catch {
       toast.error('Error al aprobar solicitud');
+    }
+  };
+
+  const handleReject = async (memberId: string) => {
+    try {
+      await rejectMember(memberId);
+      toast.success('Solicitud rechazada');
+      fetchMembersToAdd();
+    } catch {
+      toast.error('Error al rechazar solicitud');
     }
   };
 
@@ -209,8 +221,10 @@ export default function MembersPage() {
               <MemberCard
                 key={member.id}
                 member={member}
-                isAdmin={isAuthenticated && activeTab === 'toAdd'}
-                onApproved={() => handleApprove(member.id)}
+                isAdmin={isAuthenticated}
+                onApproved={activeTab === 'toAdd' ? () => handleApprove(member.id) : undefined}
+                onRejected={activeTab === 'toAdd' ? () => handleReject(member.id) : undefined}
+                onEdit={activeTab === 'existing' ? () => setEditingMember(member) : undefined}
               />
             ))}
           </div>
@@ -233,6 +247,15 @@ export default function MembersPage() {
       {/* Join request modal */}
       {showJoinModal && (
         <RequestJoinModal onClose={() => setShowJoinModal(false)} onSuccess={fetchMembers} />
+      )}
+
+      {/* Admin edit modal */}
+      {editingMember && (
+        <EditMemberModal
+          member={editingMember}
+          onClose={() => setEditingMember(null)}
+          onSaved={fetchMembers}
+        />
       )}
     </>
   );

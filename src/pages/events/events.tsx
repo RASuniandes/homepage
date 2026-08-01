@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Calendar, Search, Filter, Loader } from "lucide-react";
+import { ArrowLeft, Calendar, Search, Filter, Loader } from "lucide-react";
 import { type IEEEEventResponse } from "./iEEEType";
 import EventCard from "./eventCard";
 import { Button, Input, Select } from "../../components/ui/components";
@@ -74,6 +75,12 @@ export default function EventsPage() {
         transition={{ duration: 0.5 }}
       >
         <div className="mx-auto">
+          <Link
+            to="/tools"
+            className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-6"
+          >
+            <ArrowLeft className="w-4 h-4" /> Volver
+          </Link>
           <h1
             className="text-4xl md:text-6xl font-black mb-2"
             style={{

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Sun, Moon, ArrowRight } from 'lucide-react';
+import IEEETicker from './IEEETicker';
 
 /**
  * Design tokens (derived from the "El equipo" page):
@@ -94,7 +95,7 @@ export default function RASLayout() {
     { kind: 'scroll', id: 'nosotros', label: 'Nosotros' },
     { kind: 'route', to: '/swarm-project', label: 'Proyecto' },
     { kind: 'scroll', id: 'charlas', label: 'Charlas' },
-    { kind: 'scroll', id: 'spark', label: 'Robot Spark' },
+    { kind: 'route', to: '/robot-spark', label: 'Robot Spark' },
     { kind: 'scroll', id: 'aliados', label: 'Aliados' },
     { kind: 'route', to: '/equipo', label: 'Equipo' },
     { kind: 'route', to: '/tools', label: 'Herramientas' },
@@ -319,6 +320,8 @@ export default function RASLayout() {
               </a>
             </div>
           </div>
+
+          <IEEETicker />
 
           <div className="mt-12 flex flex-col gap-2 border-t border-[#E7E2D8] pt-6 text-xs text-[#6B655D] dark:border-white/10 dark:text-[#9A948A] sm:flex-row sm:items-center sm:justify-between">
             <span>© 2025 RAS Uniandes · IEEE Student Branch</span>

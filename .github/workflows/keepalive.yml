@@ -1,0 +1,28 @@
+name: Supabase keepalive
+
+# Free-tier Supabase projects auto-pause after ~7 days without API traffic.
+# This pings a no-op RPC daily so the project never goes quiet long enough
+# to pause. The anon key below is the same public key already shipped in
+# .env.production and the client bundle -- it is meant to be public and is
+# useless for anything RLS doesn't already allow anonymously.
+
+on:
+  schedule:
+    - cron: "13 8 * * *" # daily, well under the 7-day pause window
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        env:
+          SUPABASE_URL: https://huztffdwourqcvyqaptg.supabase.co
+          SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1enRmZmR3b3VycWN2eXFhcHRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNDg2MDUsImV4cCI6MjA5NTkyNDYwNX0.WnKYloN1InWX4xyWLQvLQlAALx4geho679BtLjkN2lo
+        run: |
+          curl --fail --silent --show-error \
+            -X POST "$SUPABASE_URL/rest/v1/rpc/ping" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{}'

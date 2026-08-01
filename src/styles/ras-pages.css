@@ -166,6 +166,20 @@
   background: var(--accent);
   color: var(--on-accent);
 }
+.ras-ds .member-card > div > .approve-btn {
+  width: auto;
+  flex: 1;
+  margin-top: 0;
+}
+.ras-ds .approve-btn.reject-btn {
+  background: transparent;
+  border-color: var(--ink-faint);
+  color: var(--ink-faint);
+}
+.ras-ds .approve-btn.reject-btn:hover {
+  background: var(--ink-faint);
+  color: var(--surface);
+}
 
 /* ─── Modal ─── */
 .ras-ds .modal-overlay {
@@ -1461,4 +1475,249 @@
   .ras-ds .bitacora-list { grid-template-columns: 1fr; }
   .ras-ds .tl-media.multi { grid-template-columns: 1fr; }
   .ras-ds .tl-media.multi img { max-height: 460px; }
+}
+
+/* ─── ROS 2 Installer: quick-install hero ─── */
+.ras-ds .installer-hero {
+  margin-top: 40px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.ras-ds .installer-hero-label {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.ras-ds .installer-cmd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  overflow-x: auto;
+}
+.ras-ds .installer-cmd code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13.5px;
+  color: var(--ink);
+  white-space: pre;
+}
+.ras-ds .installer-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.ras-ds .installer-copy-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.ras-ds .installer-source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  transition: color .2s;
+}
+.ras-ds .installer-source-link:hover { color: var(--accent); }
+
+/* ─── Wiki-style markdown rendering (ROS 2 Installer guide) ─── */
+.ras-ds .wiki {
+  margin-top: 56px;
+  max-width: 760px;
+}
+.ras-ds .wiki h1 {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -.02em;
+  margin: 0 0 12px;
+}
+.ras-ds .wiki h2 {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 700;
+  font-size: 21px;
+  letter-spacing: -.01em;
+  margin: 48px 0 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.ras-ds .wiki h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.ras-ds .wiki h3 {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 700;
+  font-size: 16.5px;
+  margin: 28px 0 12px;
+}
+.ras-ds .wiki p {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+}
+.ras-ds .wiki strong { color: var(--ink); font-weight: 600; }
+.ras-ds .wiki ul, .ras-ds .wiki ol {
+  margin: 0 0 16px;
+  padding-left: 22px;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.ras-ds .wiki li { margin-bottom: 6px; }
+.ras-ds .wiki li > code, .ras-ds .wiki p > code, .ras-ds .wiki td > code, .ras-ds .wiki th > code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: .88em;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 1px 6px;
+  color: var(--accent);
+}
+.ras-ds .wiki pre {
+  margin: 0 0 20px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  overflow-x: auto;
+}
+.ras-ds .wiki pre code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: none;
+  border: none;
+  padding: 0;
+}
+.ras-ds .wiki blockquote {
+  margin: 0 0 20px;
+  padding: 4px 20px;
+  border-left: 3px solid var(--accent);
+  color: var(--ink-soft);
+  font-style: italic;
+}
+.ras-ds .wiki blockquote p { margin: 8px 0; }
+.ras-ds .wiki hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 40px 0;
+}
+.ras-ds .wiki table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 24px;
+  font-size: 13.5px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.ras-ds .wiki th, .ras-ds .wiki td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+.ras-ds .wiki th {
+  background: var(--surface-2);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--ink-soft);
+}
+.ras-ds .wiki tr:last-child td { border-bottom: none; }
+.ras-ds .wiki a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 2px;
+}
+.ras-ds .wiki a:hover { text-decoration-color: var(--accent); }
+
+@media (max-width: 640px) {
+  .ras-ds .installer-cmd { flex-direction: column; align-items: stretch; }
+  .ras-ds .wiki table { display: block; overflow-x: auto; }
+}
+
+/* ─── Footer: IEEE upcoming events ticker ─── */
+.ras-ds .ieee-ticker {
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.ras-ds .ieee-ticker-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-faint);
+  margin-bottom: 12px;
+}
+.ras-ds .ieee-ticker-track {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+.ras-ds .ieee-ticker-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  white-space: nowrap;
+  transition: border-color .2s, color .2s;
+}
+.ras-ds .ieee-ticker-item:hover { border-color: var(--accent); }
+.ras-ds .ieee-ticker-date {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.ras-ds .ieee-ticker-title {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ras-ds .ieee-ticker-all {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 8px 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
 }

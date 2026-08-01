@@ -17,6 +17,7 @@ import { ToastContainer } from "react-toastify";
 import EventsPage from "./pages/events/events";
 import ControllerView from "./pages/controller/Controller";
 import LidarView from "./pages/lidarView/LidarView";
+import ROS2Installer from "./pages/ros2Installer/ROS2Installer";
 import './styles/ras-pages.css'
 import './styles/ras-tokens.css'
 export default function App() {
@@ -37,15 +38,18 @@ export default function App() {
           <Route path="/tools" element={<ToolsHub />} />
           <Route path="/tools/pcb-calculator" element={<PcbWidthCalculator />} />
           <Route path="/tools/lipo-estimator" element={<LipoEstimator />} />
+          <Route path="/tools/ros2-installer" element={<ROS2Installer />} />
           <Route path="/swarm-project" element={<SwarmProject />} />
           <Route path="/robot-spark" element={<RobotSpark />} />
           <Route path="/bitacora" element={<HistoricIndex />} />
           <Route path="/bitacora/:slug" element={<BitacoraTimeline />} />
         </Route>
 
+        {/* Standalone — no Layout navbar/sidebar, just its own back button */}
+        <Route path="/events" element={<EventsPage />} />
+
         {/* Legacy pages — old dark-theme Layout, unchanged */}
         <Route element={<Layout />}>
-          <Route path="/events" element={<EventsPage />} />
           <Route path="/controller" element={<ControllerView />} />
           <Route path="/lidar-view" element={<LidarView />} />
         </Route>

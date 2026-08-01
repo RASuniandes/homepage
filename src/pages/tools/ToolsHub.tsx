@@ -77,13 +77,29 @@ export default function ToolsHub() {
               <span className="tag">Robots</span>
             </div>
             <div className="card-cta">
-              <span
-                className="btn btn-ghost"
-                style={{ opacity: .45, cursor: 'default', userSelect: 'none' }}
-                aria-disabled="true"
-              >
-                Próximamente
-              </span>
+              <Link to="/tools/ros2-installer" className="btn btn-ghost">
+                Abrir guía <span className="arr">→</span>
+              </Link>
+            </div>
+          </article>
+
+          <article className="card">
+            <div className="glow" />
+            <div className="num">04 / Comunidad</div>
+            <h3>Eventos IEEE</h3>
+            <p>
+              Próximos eventos y talleres de la comunidad IEEE, sincronizados
+              directamente desde vTools.
+            </p>
+            <div className="tags">
+              <span className="tag">IEEE</span>
+              <span className="tag">vTools</span>
+              <span className="tag">Eventos</span>
+            </div>
+            <div className="card-cta">
+              <Link to="/events" className="btn btn-ghost">
+                Ver eventos <span className="arr">→</span>
+              </Link>
             </div>
           </article>
 

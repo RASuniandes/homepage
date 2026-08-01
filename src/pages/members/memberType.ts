@@ -22,4 +22,6 @@ export interface MemberCardProps {
   member: Member
   isAdmin?: boolean
   onApproved?: (memberId: string) => void
+  onRejected?: (memberId: string) => void
+  onEdit?: (member: Member) => void
 }
