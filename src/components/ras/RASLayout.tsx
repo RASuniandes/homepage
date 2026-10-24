@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Sun, Moon, ArrowRight } from 'lucide-react';
+import { Menu, X, Sun, Moon, ArrowRight, ChevronDown } from 'lucide-react';
 import IEEETicker from './IEEETicker';
 
 /**
@@ -26,6 +26,7 @@ export default function RASLayout() {
 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [projectsOpen, setProjectsOpen] = useState(false);
 
   // Theme toggle persistence
   useEffect(() => {
@@ -44,9 +45,10 @@ export default function RASLayout() {
     localStorage.setItem('ras-theme', next ? 'dark' : 'light');
   };
 
-  // Close mobile drawer on route change
+  // Close mobile drawer and projects menu on route change
   useEffect(() => {
     setMobileOpen(false);
+    setProjectsOpen(false);
   }, [location.pathname]);
 
   // Lock body scroll while the mobile drawer is open
@@ -88,59 +90,124 @@ export default function RASLayout() {
     }
   };
 
+  const PROJECTS: Array<{ to: string; label: string; desc: string }> = [
+    { to: '/swarm-project', label: 'Swarm', desc: 'Proyecto insignia de enjambres robóticos' },
+    { to: '/robot-spark', label: 'Robot Spark', desc: 'Programa de educación en robótica' },
+    { to: '/ai-studio', label: 'AI-Studio', desc: 'Inteligencia artificial aplicada a robótica' },
+  ];
+
   const NAV_ITEMS: Array<
     | { kind: 'scroll'; id: string; label: string }
     | { kind: 'route'; to: string; label: string }
+    | { kind: 'projects'; label: string }
   > = [
     { kind: 'scroll', id: 'nosotros', label: 'Nosotros' },
-    { kind: 'route', to: '/swarm-project', label: 'Proyecto' },
+    { kind: 'projects', label: 'Proyectos' },
     { kind: 'scroll', id: 'charlas', label: 'Charlas' },
-    { kind: 'route', to: '/robot-spark', label: 'Robot Spark' },
     { kind: 'scroll', id: 'aliados', label: 'Aliados' },
     { kind: 'route', to: '/equipo', label: 'Equipo' },
     { kind: 'route', to: '/tools', label: 'Herramientas' },
     { kind: 'route', to: '/robot-spark/berto', label: 'Mini Juego' },
   ];
+  const isProjectActive = PROJECTS.some((p) => location.pathname === p.to);
+
   const linkBase =
-    'relative text-[0.925rem] font-medium text-[#171310] transition-colors hover:text-[#7A1F2E] dark:text-[#F0EBE2] dark:hover:text-[#E3A6AD] ' +
+    'relative whitespace-nowrap text-[0.925rem] font-medium text-[#171310] transition-colors hover:text-[#7A1F2E] dark:text-[#F0EBE2] dark:hover:text-[#E3A6AD] ' +
     'after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-[#7A1F2E] after:transition-all after:duration-300 hover:after:w-full dark:after:bg-[#E3A6AD]';
 
   const activeLinkBase =
-    'relative text-[0.925rem] font-semibold text-[#7A1F2E] dark:text-[#E3A6AD] ' +
+    'relative whitespace-nowrap text-[0.925rem] font-semibold text-[#7A1F2E] dark:text-[#E3A6AD] ' +
     'after:absolute after:-bottom-1 after:left-0 after:h-px after:w-full after:bg-[#7A1F2E] dark:after:bg-[#E3A6AD]';
-  const isMobile = window.matchMedia('(max-width: 1024px)').matches;
   return (
     <div id="ras-page" className="ras-ds min-h-screen bg-[#F5F3ED] dark:bg-[#14110F]" ref={rootRef}>
       {/* ══════════════ NAV ══════════════ */}
       <header className="sticky top-0 z-50 border-b border-[#E7E2D8] backdrop-blur-md dark:border-white/10 "
-        style={{ backgroundColor: isDarkMode ? '#14110F' : '#FFFFFF' }}
+        style={{
+          backgroundColor: isDarkMode ? '#14110F' : '#FFFFFF',
+          // Theme-aware colours for nav pieces that can't rely on `dark:` (which follows the OS, not the site toggle)
+          ['--nav-ink' as string]: isDarkMode ? '#F0EBE2' : '#171310',
+          ['--nav-accent' as string]: isDarkMode ? '#E3A6AD' : '#7A1F2E',
+          ['--nav-muted' as string]: isDarkMode ? '#9A948A' : '#6B655D',
+          ['--nav-hover' as string]: isDarkMode ? 'rgba(255,255,255,.05)' : '#F5F3ED',
+          ['--nav-line' as string]: isDarkMode ? 'rgba(255,255,255,.1)' : '#E7E2D8',
+        }}
       >
         <div className="mx-auto flex h-[72px] items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Brand */}
-          <Link to="/" className="flex items-center gap-3 border-white rounded-[1rem] bg-white px-2 mx-2"
-            
-          >
+          <Link to="/" className="flex shrink-0 items-center gap-3 border-white rounded-[1rem] bg-white px-2 mx-2">
             <img
               src={`/RAS_oficial_logo.png`}
               alt="RAS Uniandes"
               className="h-12 my-1"
             />
-            {
-              !isMobile &&
-            
-            <img 
-            src={`/RAS_oficial_text.png`}
+            <img
+              src={`/RAS_oficial_text.png`}
               alt="RAS Uniandes Texto"
-              className="h-8"
+              className="hidden h-8 md:block"
             />
-}
-
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden items-center gap-8 lg:flex">
+          <nav className="ml-auto mr-6 hidden items-center gap-5 xl:flex 2xl:gap-5">
             {NAV_ITEMS.map((item) =>
-              item.kind === 'scroll' ? (
+              item.kind === 'projects' ? (
+                <div
+                  key={item.label}
+                  className="relative"
+                  onMouseEnter={() => setProjectsOpen(true)}
+                  onMouseLeave={() => setProjectsOpen(false)}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setProjectsOpen((v) => !v)}
+                    aria-expanded={projectsOpen}
+                    aria-haspopup="true"
+                    className={
+                      'relative inline-flex items-center gap-1 whitespace-nowrap text-[0.925rem] transition-colors ' +
+                      'after:absolute after:-bottom-1 after:left-0 after:h-px after:bg-[var(--nav-accent)] after:transition-all after:duration-300 ' +
+                      (isProjectActive
+                        ? 'font-semibold text-[var(--nav-accent)] after:w-full'
+                        : 'font-medium text-[var(--nav-ink)] hover:text-[var(--nav-accent)] after:w-0 hover:after:w-full')
+                    }
+                  >
+                    {item.label}
+                    <ChevronDown
+                      className={`h-3.5 w-3.5 transition-transform duration-200 ${projectsOpen ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+
+                  {/* pt-3 bridges the gap so the menu doesn't close while the cursor travels to it */}
+                  <div
+                    className={`absolute left-1/2 top-full z-50 w-72 -translate-x-1/2 pt-3 transition-all duration-200 ${
+                      projectsOpen ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-1 opacity-0'
+                    }`}
+                  >
+                    <div
+                      className="overflow-hidden rounded-2xl border border-[var(--nav-line)] p-2 shadow-[0_24px_60px_-24px_rgba(28,26,27,.32)]"
+                      style={{ backgroundColor: isDarkMode ? '#1D1A1D' : '#FFFFFF' }}
+                    >
+                      {PROJECTS.map((p) => (
+                        <Link
+                          key={p.to}
+                          to={p.to}
+                          className="block rounded-xl px-4 py-3 transition-colors hover:bg-[var(--nav-hover)]"
+                        >
+                          <span
+                            className={`block text-[0.925rem] font-semibold ${
+                              location.pathname === p.to ? 'text-[var(--nav-accent)]' : 'text-[var(--nav-ink)]'
+                            }`}
+                          >
+                            {p.label}
+                          </span>
+                          <span className="block text-[0.8rem] leading-snug text-[var(--nav-muted)]">
+                            {p.desc}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : item.kind === 'scroll' ? (
                 <a key={item.label} href="#" onClick={scrollTo(item.id)} className={linkBase}>
                   {item.label}
                 </a>
@@ -172,7 +239,7 @@ export default function RASLayout() {
 
             <a
               href="mailto:rasuniandes@uniandes.edu.co"
-              className="group hidden items-center gap-2 rounded-full bg-[#7A1F2E] px-5 py-2.5 text-[0.85rem] font-semibold  transition-colors hover:bg-[#5C1622] md:inline-flex"
+              className="group hidden items-center gap-2 whitespace-nowrap rounded-full bg-[#7A1F2E] px-5 py-2.5 text-[0.85rem] font-semibold transition-colors hover:bg-[#5C1622] md:inline-flex"
               style={{ color: 'white' }}
             >
               Trabajemos juntos
@@ -181,7 +248,7 @@ export default function RASLayout() {
 
             <button
               onClick={() => setMobileOpen((v) => !v)}
-              className="rounded-full p-2 text-[#171310] transition-colors hover:bg-[#F0EDE4] dark:text-[#F5F3ED] dark:hover:bg-white/10 lg:hidden"
+              className="rounded-full p-2 text-[#171310] transition-colors hover:bg-[#F0EDE4] dark:text-[#F5F3ED] dark:hover:bg-white/10 xl:hidden"
               aria-label="Abrir menú"
               aria-expanded={mobileOpen}
             >
@@ -192,7 +259,7 @@ export default function RASLayout() {
 
         {/* Mobile drawer */}
         <div
-          className={`grid overflow-hidden border-t border-[#E7E2D8] bg-[#FFFFFF] transition-[grid-template-rows] duration-300 ease-out dark:border-white/10 dark:bg-[#14110F] lg:hidden ${
+          className={`grid overflow-hidden border-t border-[#E7E2D8] bg-[#FFFFFF] transition-[grid-template-rows] duration-300 ease-out dark:border-white/10 dark:bg-[#14110F] xl:hidden ${
             mobileOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
           }`}
           style={{ backgroundColor: isDarkMode ? '#14110F' : '#FFFFFF' }}
@@ -204,7 +271,33 @@ export default function RASLayout() {
               </span>
               <nav className="flex flex-col divide-y divide-[#E7E2D8] dark:divide-white/10">
                 {NAV_ITEMS.map((item) =>
-                  item.kind === 'scroll' ? (
+                  item.kind === 'projects' ? (
+                    <div key={item.label} className="py-3">
+                      <span className="text-[0.975rem] font-medium text-[var(--nav-ink)]">
+                        {item.label}
+                      </span>
+                      <div className="mt-1 flex flex-col border-l border-[var(--nav-line)] pl-4">
+                        {PROJECTS.map((p) => (
+                          <Link
+                            key={p.to}
+                            to={p.to}
+                            className="py-1.5 text-[0.925rem]"
+                          >
+                            {/* span, not the <a>: `.ras-ds a { color: inherit }` would override the colour */}
+                            <span
+                              className={
+                                location.pathname === p.to
+                                  ? 'font-semibold text-[var(--nav-accent)]'
+                                  : 'text-[var(--nav-muted)]'
+                              }
+                            >
+                              {p.label}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ) : item.kind === 'scroll' ? (
                     <a
                       key={item.label}
                       href="#"

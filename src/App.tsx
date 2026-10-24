@@ -9,6 +9,7 @@ import MembersPage from "./pages/members/members";
 import ToolsHub from "./pages/tools/ToolsHub";
 import SwarmProject from "./pages/swarm/SwarmProject";
 import RobotSpark from "./pages/robotSpark/RobotSpark";
+import AIStudio from "./pages/aiStudio/AIStudio";
 import BertoCtf from "./pages/bertoCtf/BertoCtf";
 import BertoSolutions from "./pages/bertoCtf/BertoSolutions";
 import HistoricIndex from "./pages/historic/HistoricIndex";
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="/tools/ros2-installer" element={<ROS2Installer />} />
           <Route path="/swarm-project" element={<SwarmProject />} />
           <Route path="/robot-spark" element={<RobotSpark />} />
+          <Route path="/ai-studio" element={<AIStudio />} />
           <Route path="/bitacora" element={<HistoricIndex />} />
           <Route path="/bitacora/:slug" element={<BitacoraTimeline />} />
         </Route>
