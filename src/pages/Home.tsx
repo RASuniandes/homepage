@@ -275,6 +275,47 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ══════════════ AI-STUDIO ══════════════ */}
+        <section className="block" id="ai-studio">
+          <div className="wrap split">
+            <div className="media reveal">
+              {/* No photo yet: typographic panel echoing the AI-Studio page hero */}
+              <div className="media-card ai-panel" style={{ aspectRatio: '5/4' }} aria-hidden="true">
+                <div className="ai-panel-grid" />
+                <div className="ai-panel-glow" />
+                <span className="ai-panel-k">IEEE RAS Uniandes · I+D</span>
+                <span className="ai-panel-title">AI<span className="ai-panel-dash">-</span>Studio</span>
+                <div className="ai-panel-chips">
+                  <span>Physical AI</span>
+                  <span>Agentes</span>
+                  <span>LLMs</span>
+                </div>
+              </div>
+            </div>
+            <div className="copy reveal">
+              <span className="eyebrow">Investigación y desarrollo</span>
+              <div className="sec-head">
+                <h2>AI-Studio</h2>
+                <p>
+                  Nuestro estudio de investigación: exploramos cómo llevar agentes, LLMs y otros
+                  modelos de IA al mundo físico, empezando por la inteligencia física, para hacer
+                  los robots cada vez más inteligentes y autónomos.
+                </p>
+              </div>
+              <div className="prose" style={{ marginTop: 18 }}>
+                <p>
+                  Nuestro ciclo es <strong>investigar, crear, documentar y publicar</strong>.
+                </p>
+              </div>
+              <div className="cta-row" style={{ marginTop: 28 }}>
+                <Link to="/ai-studio" className="btn btn-primary">
+                  Conoce AI-Studio <span className="arr">→</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ══════════════ CTA ══════════════ */}
         <section className="block cta" id="aliados">
           <div className="wrap reveal">
