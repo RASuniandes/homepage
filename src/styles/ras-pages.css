@@ -1721,3 +1721,260 @@
   color: var(--accent);
   white-space: nowrap;
 }
+
+/* =====================================================
+   AI-STUDIO PAGE
+   ===================================================== */
+
+/* ─── Hero (typographic, dark — no photo yet) ─── */
+.ras-ds .ais-hero {
+  position: relative;
+  min-height: min(78vh, 860px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: #120f12;
+  color: #ffffff;
+}
+.ras-ds .ais-hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.16) 1px, transparent 1.5px),
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 48px 48px, 48px 48px, 48px 48px;
+  background-position: 24px 24px, 0 0, 0 0;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
+  pointer-events: none;
+}
+.ras-ds .ais-hero-glow {
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  right: -20vmax;
+  top: -25vmax;
+  background: radial-gradient(circle, rgba(223,74,100,.38) 0%, rgba(157,20,44,.14) 35%, transparent 65%);
+  pointer-events: none;
+}
+.ras-ds .ais-hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 120px 0 72px;
+}
+.ras-ds .ais-hero-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.55);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+.ras-ds .ais-hero-eyebrow::before {
+  content: '';
+  width: 22px;
+  height: 2px;
+  background: #df4a64;
+  flex-shrink: 0;
+}
+.ras-ds .ais-hero-title {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 900;
+  font-size: clamp(64px, 12vw, 150px);
+  letter-spacing: -.045em;
+  line-height: .9;
+  color: #ffffff;
+  margin: 0 0 24px;
+}
+.ras-ds .ais-dash { color: #df4a64; }
+.ras-ds .ais-hero-sub {
+  font-size: 18px;
+  color: rgba(255,255,255,.62);
+  margin: 0;
+  max-width: 48ch;
+}
+.ras-ds .ais-btn-light {
+  background: transparent;
+  color: #ffffff;
+  border-color: rgba(255,255,255,.3);
+}
+.ras-ds .ais-btn-light:hover {
+  border-color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* ─── Statline: values are words, not numbers — keep them on one line ─── */
+.ras-ds .ais-stats .s .val { font-size: clamp(22px, 2.2vw, 32px); white-space: nowrap; }
+
+/* ─── Founding / first-generation band ─── */
+.ras-ds .ais-founding {
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+}
+.ras-ds .ais-founding-inner {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) 1.2fr;
+  gap: 64px;
+  align-items: center;
+}
+.ras-ds .ais-gen {
+  display: flex;
+  flex-direction: column;
+  border-left: 2px solid var(--accent);
+  padding-left: 28px;
+}
+.ras-ds .ais-gen-k {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.ras-ds .ais-gen-num {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 900;
+  font-size: clamp(110px, 16vw, 220px);
+  letter-spacing: -.06em;
+  line-height: .85;
+  color: var(--accent);
+}
+
+/* ─── Tinted band behind the work-line cards ─── */
+.ras-ds .ais-band {
+  background: var(--surface-2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+/* ─── Roadmap phases ─── */
+.ras-ds .ais-phases {
+  list-style: none;
+  padding: 0;
+  margin: 46px 0 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 2px solid var(--line-strong);
+}
+.ras-ds .ais-phase {
+  position: relative;
+  padding: 28px 24px 0 0;
+}
+.ras-ds .ais-phase::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--accent);
+}
+.ras-ds .ais-phase-k {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.ras-ds .ais-phase h3 {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  margin: 8px 0 8px;
+}
+.ras-ds .ais-phase p {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ─── Research-areas modal (extends .modal-overlay / .modal) ─── */
+.ras-ds .ais-modal-overlay {
+  background: rgba(10,8,10,.72);
+  animation: ais-fade .2s ease-out;
+}
+.ras-ds .ais-modal {
+  max-width: 1040px;
+  padding: 44px;
+  animation: ais-pop .25s ease-out;
+}
+.ras-ds .ais-modal .ais-modal-title {
+  font-size: clamp(28px, 3.4vw, 40px);
+  letter-spacing: -.03em;
+  margin: 14px 0 10px;
+}
+.ras-ds .ais-modal-lead {
+  color: var(--ink-soft);
+  font-size: 16px;
+  max-width: 60ch;
+  margin: 0 0 30px;
+}
+.ras-ds .ais-modal-areas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.ras-ds .ais-modal-area {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.ras-ds .ais-modal-area h3 {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  margin: 8px 0 8px;
+}
+.ras-ds .ais-modal-area p {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+  flex: 1;
+}
+.ras-ds .ais-modal-area .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+/* ─── Tags: a bit larger, filled on hover, not text-selectable ─── */
+.ras-ds .ais-page .tag {
+  font-size: 13px;
+  padding: 7px 13px;
+  border-radius: 8px;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.ras-ds .ais-page .tag:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.ras-ds .ais-modal-area .tags,
+.ras-ds .ais-page .card .tags { gap: 8px; }
+
+@keyframes ais-fade { from { opacity: 0; } }
+@keyframes ais-pop { from { opacity: 0; transform: translateY(12px) scale(.98); } }
+@media (prefers-reduced-motion: reduce) {
+  .ras-ds .ais-modal-overlay, .ras-ds .ais-modal { animation: none; }
+}
+
+/* ─── AI-Studio responsive ─── */
+@media (max-width: 860px) {
+  .ras-ds .ais-modal { padding: 32px 22px; }
+  .ras-ds .ais-modal-areas { grid-template-columns: 1fr; }
+  .ras-ds .ais-founding-inner { grid-template-columns: 1fr; gap: 32px; }
+  .ras-ds .ais-hero { min-height: min(64vh, 700px); }
+  .ras-ds .ais-phases { grid-template-columns: 1fr 1fr; row-gap: 36px; border-top: 0; }
+  .ras-ds .ais-phase { border-top: 2px solid var(--line-strong); }
+}
+@media (max-width: 560px) {
+  .ras-ds .ais-phases { grid-template-columns: 1fr; }
+  .ras-ds .ais-hero-sub { font-size: 16px; }
+}
